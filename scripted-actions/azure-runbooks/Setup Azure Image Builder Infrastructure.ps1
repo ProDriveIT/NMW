@@ -277,8 +277,8 @@ if ($CreateStorageAccount) {
             New-AzStorageContainer `
                 -Name "scripts" `
                 -Context $ctx `
-                -Permission Blob | Out-Null
-            Write-Output "✓ Created 'scripts' container in storage account"
+                -Permission Off | Out-Null
+            Write-Output "✓ Created 'scripts' container in storage account (private access)"
         }
         else {
             Write-Output "✓ 'scripts' container already exists"
@@ -288,7 +288,12 @@ if ($CreateStorageAccount) {
         Write-Output ""
         Write-Output "  Storage Account Name: $StorageAccountName"
         Write-Output "  Container Name: scripts"
+        Write-Output "  Container Access: Private (requires SAS tokens or storage key for access)"
         Write-Output "  Blob URL Pattern: https://$StorageAccountName.blob.core.windows.net/scripts/"
+        Write-Output ""
+        Write-Output "  NOTE: Since the container is private, you'll need to either:"
+        Write-Output "    - Generate SAS tokens for script URLs in your image template"
+        Write-Output "    - Or allow access from the build VM's subnet in storage firewall rules"
     }
     catch {
         Write-Warning "⚠ Failed to create storage account: $_"
