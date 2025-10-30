@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "notes": "Classification of scripts for Azure Image Builder (AIB) usage vs external/operational use. 'aibCompatible' scripts are safe to run as AIB customizers (non-interactive, no manual input, no reboot required). 'external' scripts should not run inside AIB builds. 'needsReview' likely work but may depend on environment, network egress, or introduce agents you may not want baked into a base image.",
+  "rules": {
+    "aibCompatible": [
+      "scripted-actions/custom-image-template-scripts/*.ps1"
+    ],
+    "external": [
+      "scripted-actions/azure-runbooks/*.ps1",
+      "scripted-actions/extras/azure-runbooks/*.ps1",
+      "scripted-actions/Repair-Reorg-Folders.ps1",
+      "scripted-actions/Reorganize-AVD-Scripts.ps1",
+      "scripted-actions/Invoke-AVDBuildFromManifest.ps1"
+    ],
+    "needsReview": [
+      "scripted-actions/windows-scripts/*.ps1",
+      "scripted-actions/extras/windows-scripts/*.ps1"
+    ]
+  },
+  "overrides": {
+    "aibCompatible": [
+      "scripted-actions/windows-scripts/install-7zip-choco.ps1",
+      "scripted-actions/windows-scripts/install-chrome-choco.ps1",
+      "scripted-actions/windows-scripts/install-edge-choco.ps1",
+      "scripted-actions/windows-scripts/install-firefox-choco.ps1",
+      "scripted-actions/windows-scripts/install-m365-apps.ps1",
+      "scripted-actions/windows-scripts/install-notepadpp-choco.ps1",
+      "scripted-actions/windows-scripts/install-onedrive-per-machine.ps1",
+      "scripted-actions/windows-scripts/install-remote-display-analyzer.ps1",
+      "scripted-actions/windows-scripts/install-vscode-choco.ps1",
+      "scripted-actions/windows-scripts/install-zoom-vdi.ps1",
+      "scripted-actions/windows-scripts/install-nvidia-gpu-driver-azure.ps1",
+      "scripted-actions/windows-scripts/enable-screen-capture-protection.ps1",
+      "scripted-actions/windows-scripts/optimize-microsoft-edge.ps1",
+      "scripted-actions/custom-image-template-scripts/*.ps1"
+    ],
+    "external": [
+      "scripted-actions/windows-scripts/install-ninjarmm-agent.ps1",
+      "scripted-actions/windows-scripts/install-sophos-endpoint.ps1",
+      "scripted-actions/windows-scripts/Unregister Sophos Endpoint agent in Sophos Central.ps1",
+      "scripted-actions/extras/windows-scripts/Restart AVD Agent.ps1",
+      "scripted-actions/extras/windows-scripts/Grant user local admin rights.ps1",
+      "scripted-actions/extras/windows-scripts/Virtual Desktop Optimizations (1909).ps1",
+      "scripted-actions/extras/windows-scripts/Virtual Desktop Optimizations (2004).ps1",
+      "scripted-actions/extras/windows-scripts/Virtual Desktop Optimizations (20H2).ps1",
+      "scripted-actions/extras/windows-scripts/Install Microsoft Teams.ps1",
+      "scripted-actions/extras/windows-scripts/Update Windows 10.ps1",
+      "scripted-actions/extras/windows-scripts/Update Windows 11.ps1"
+    ],
+    "needsReview": [
+      "scripted-actions/windows-scripts/Enable Winget for CIS images (UAM).ps1",
+      "scripted-actions/windows-scripts/install-microsoft-teams-new.ps1",
+      "scripted-actions/custom-image-template-scripts/admin-sysprep.ps1",
+      "scripted-actions/custom-image-template-scripts/configure-office.ps1",
+      "scripted-actions/custom-image-template-scripts/configure-teams-optimizations.ps1",
+      "scripted-actions/custom-image-template-scripts/enable-fslogix-kerberos.ps1",
+      "scripted-actions/custom-image-template-scripts/install-enable-fslogix.ps1"
+    ]
+  },
+  "guidance": {
+    "aibConstraints": [
+      "Scripts must be non-interactive (no Read-Host/UI prompts)",
+      "Avoid reboots; if unavoidable, use AIB restart handling",
+      "Support running under SYSTEM; avoid user-profile assumptions",
+      "No domain join or host-pool enrollment inside base image",
+      "External downloads require outbound internet or staging",
+      "Use silent installers and explicit exit codes"
+    ],
+    "externalExamples": [
+      "Azure runbooks operating on live hosts or resources",
+      "Agent enrollment (RMM/AV), license activation, tenant-specific bindings",
+      "Operational fixes like restarting AVD agent or shrinking disks"
+    ]
+  }
+}
+
+
