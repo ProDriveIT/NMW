@@ -1,0 +1,23 @@
+{
+  "features": {
+    "optimizations": true,
+    "fslogix": { "enable": true, "mode": "standard" },
+    "rdpShortpath": { "enable": true, "publicFallback": false },
+    "screenCaptureProtection": true,
+    "language": { "installPacks": [], "defaultLocale": "en-GB" },
+    "timezoneRedirection": true,
+    "storageSense": { "disable": true }
+  },
+  "apps": {
+    "office": { "install": false, "channel": "MonthlyEnterprise" },
+    "teamsNew": false,
+    "browsers": { "edge": true, "chrome": false, "firefox": false },
+    "tools": { "notepadpp": false, "sevenZip": false, "vscode": false },
+    "onedrivePerMachine": false,
+    "zoomVdi": false,
+    "agents": { "ninjaRmm": false, "sophos": false },
+    "gpu": { "nvidiaAzure": false }
+  },
+  "notes": "Set booleans to enable items. Change locales and Office channel as needed."
+}
+
