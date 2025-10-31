@@ -85,7 +85,7 @@ try {
                                 if ($currentPercentage -eq 0 -or $currentPercentage -lt 0.1) {
                                     # Double-check the status to ensure it's truly decrypted
                                     if ($currentStatus -eq "FullyDecrypted" -or $currentStatus -eq "DecryptionComplete" -or $currentStatus -eq "VolumeUnprotected") {
-                                        Write-Host "    ✓ BitLocker decryption completed successfully (0`% encrypted)" -ForegroundColor Green
+                                        Write-Host "    [OK] BitLocker decryption completed successfully (0`% encrypted)" -ForegroundColor Green
                                         break
                                     } else {
                                         # Percentage is 0 but status hasn't updated yet - wait a bit more
@@ -93,7 +93,7 @@ try {
                                         Start-Sleep -Seconds 5
                                         $verifyVolume = Get-BitLockerVolume -MountPoint $volume.MountPoint -ErrorAction SilentlyContinue
                                         if ($verifyVolume -and ($verifyVolume.EncryptionPercentage -eq 0 -or $verifyVolume.EncryptionPercentage -lt 0.1)) {
-                                            Write-Host "    ✓ BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
+                                            Write-Host "    [OK] BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
                                             break
                                         }
                                     }
@@ -104,21 +104,21 @@ try {
                                 
                                 # Check for errors
                                 if ($currentStatus -eq "EncryptionInProgress" -and $currentPercentage -gt 50) {
-                                    Write-Host "    ⚠ Warning: Volume status shows encryption may have restarted: $currentStatus" -ForegroundColor Yellow
+                                    Write-Host "    [WARN] Warning: Volume status shows encryption may have restarted: $currentStatus" -ForegroundColor Yellow
                                 }
                             }
                             
                             # Check for timeout
                             $elapsed = (Get-Date) - $startTime
                             if ($elapsed.TotalSeconds -gt $maxWaitTime) {
-                                Write-Host "    ⚠ Timeout waiting for decryption to complete (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
+                                Write-Host "    [WARN] Timeout waiting for decryption to complete (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
                                 Write-Host "    Decryption may still be in progress. Check status manually." -ForegroundColor Yellow
                                 break
                             }
                         } while ($true)
                     }
                     catch {
-                        Write-Host "    ⚠ Failed to disable BitLocker: $_" -ForegroundColor Yellow
+                        Write-Host "    [WARN] Failed to disable BitLocker: $_" -ForegroundColor Yellow
                         Write-Host "    Attempting alternative method..." -ForegroundColor Cyan
                         
                         # Fallback to manage-bde command
@@ -166,7 +166,7 @@ try {
                                             Start-Sleep -Seconds 5
                                             $verifyStatus = & manage-bde.exe -status $volume.MountPoint 2>&1
                                             if ($verifyStatus -match "Percentage Encrypted:\s*0%") {
-                                                Write-Host "    ✓ BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
+                                                Write-Host "    [OK] BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
                                                 break
                                             }
                                         }
@@ -183,19 +183,19 @@ try {
                                     }
                                 } while ($true)
                             } else {
-                                Write-Host "    ✗ Could not disable BitLocker: $result" -ForegroundColor Red
+                                Write-Host "    [ERROR] Could not disable BitLocker: $result" -ForegroundColor Red
                             }
                         }
                         catch {
-                            Write-Host "    ✗ Alternative method also failed: $_" -ForegroundColor Red
+                            Write-Host "    [ERROR] Alternative method also failed: $_" -ForegroundColor Red
                         }
                     }
                 }
             } else {
-                Write-Host "✓ No encrypted volumes found. BitLocker is already disabled or not configured." -ForegroundColor Green
+                Write-Host "[OK] No encrypted volumes found. BitLocker is already disabled or not configured." -ForegroundColor Green
             }
         } else {
-            Write-Host "✓ BitLocker is not available or no volumes detected." -ForegroundColor Green
+            Write-Host "[OK] BitLocker is not available or no volumes detected." -ForegroundColor Green
         }
     } else {
         # Try using manage-bde command line tool
@@ -270,7 +270,7 @@ try {
                         }
                     } while ($true)
                 } else {
-                    Write-Host "    ⚠ Could not disable BitLocker: $result" -ForegroundColor Yellow
+                    Write-Host "    [WARN] Could not disable BitLocker: $result" -ForegroundColor Yellow
                 }
             }
         }
@@ -281,7 +281,7 @@ try {
     }
 }
 catch {
-    Write-Host "⚠ Error checking BitLocker status: $_" -ForegroundColor Yellow
+    Write-Host "[WARN] Error checking BitLocker status: $_" -ForegroundColor Yellow
     Write-Host "Continuing with other preflight checks..." -ForegroundColor Cyan
 }
 
@@ -344,19 +344,19 @@ if ($badApps.Count -gt 0) {
         try {
             # Remove from all users
             Get-AppxPackage -AllUsers -Name $app -ErrorAction SilentlyContinue | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
-            Write-Host "  ✓ Removed AppX package for all users" -ForegroundColor Green
+            Write-Host "  [OK] Removed AppX package for all users" -ForegroundColor Green
         }
         catch {
-            Write-Host "  ⚠ Could not remove AppX package for all users: $_" -ForegroundColor Yellow
+            Write-Host "  [WARN] Could not remove AppX package for all users: $_" -ForegroundColor Yellow
         }
         
         try {
             # Remove provisioned package
             Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq $app -or $_.PackageName -like "$app*"} | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
-            Write-Host "  ✓ Removed provisioned AppX package" -ForegroundColor Green
+            Write-Host "  [OK] Removed provisioned AppX package" -ForegroundColor Green
         }
         catch {
-            Write-Host "  ⚠ Could not remove provisioned AppX package: $_" -ForegroundColor Yellow
+            Write-Host "  [WARN] Could not remove provisioned AppX package: $_" -ForegroundColor Yellow
         }
     }
     
@@ -370,8 +370,8 @@ if ($badApps.Count -gt 0) {
 # Final summary
 Write-Host ""
 Write-Host "==================== Preflight Check Summary ====================" -ForegroundColor Cyan
-Write-Host "✓ BitLocker check completed" -ForegroundColor Green
-Write-Host "✓ AppX package check completed" -ForegroundColor Green
+Write-Host "[OK] BitLocker check completed" -ForegroundColor Green
+Write-Host "[OK] AppX package check completed" -ForegroundColor Green
 Write-Host ""
 Write-Host "Preflight checks completed. You can now re-run Sysprep." -ForegroundColor Green
 
