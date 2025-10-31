@@ -49,7 +49,7 @@ $ODTConfig = @"
 <Configuration>
   <Add OfficeClientEdition="64" Channel="MonthlyEnterprise">
     <Product ID="O365ProPlusRetail">
-      <Language ID="en-US" />
+      <Language ID="en-GB" />
       <Language ID="MatchOS" />
       <ExcludeApp ID="Groove" />
       <ExcludeApp ID="Lync" />
