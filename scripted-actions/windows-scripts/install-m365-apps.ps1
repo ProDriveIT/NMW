@@ -1,10 +1,10 @@
-#description: Installs/Updates Office 365 Apps to newest version and disables Auto-Update. Recommended to run on desktop images.
+#description: Installs/Updates Microsoft 365 Apps for Business to newest version and disables Auto-Update. Recommended to run on desktop images.
 #execution mode: IndividualWithRestart
 #tags: Nerdio, Apps install
 <# 
 Notes:
-This script will update Microsoft 365 apps on an Image VM without turning on automatic updates.
-It downloads automatically downloads the latest version of ODT and uses it to update M35 Apps.
+This script will update Microsoft 365 Apps for Business on an Image VM without turning on automatic updates.
+It downloads automatically downloads the latest version of ODT and uses it to update M365 Apps for Business.
 
 Please edit $ODTConfig if you use a non-standard deployment of Office 365 (i.e. leaving out powerpoint)
 $ODTConfig is what ODT will use for configuration. 
@@ -47,8 +47,8 @@ Start-Process -filepath "$env:windir\Temp\odt_sadata.exe" -ArgumentList "/extrac
 # create a base config XML for ODT to use, this one has auto-update disabled
 $ODTConfig = @"
 <Configuration>
-  <Add OfficeClientEdition="64" Channel="MonthlyEnterprise">
-    <Product ID="O365ProPlusRetail">
+  <Add OfficeClientEdition="64" Channel="Monthly">
+    <Product ID="O365BusinessRetail">
       <Language ID="en-GB" />
       <ExcludeApp ID="Groove" />
       <ExcludeApp ID="Lync" />
