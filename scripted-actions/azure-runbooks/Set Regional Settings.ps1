@@ -4,20 +4,27 @@
 Notes:
 This script is used to configure the Regional Settings on a VM. Keyboard layouts, Geo Id, MUI and User Locale are configured.
 
-The parameters to be defined are stored within a JSON string, which can be specified in this script or in a 
-Nerdio Secure Variable called RegionSettings.
+By default, this script sets English (United Kingdom) regional settings. The parameters can be overridden by:
+- Defining $JsonParams variable in this script, or
+- Defining a Nerdio Secure Variable called RegionSettings
 
 New region settings will be applied for all users who log in after running this script.
 
 Requires:
 - Install the needed language packs first
-- The $JsonParams variable must be defined in this script, or a SecureVariable called RegionSettings must be defined in Nerdio
 - If a user has an existing profile, they will need to change their default region settings manually, or their profile will need to be recreated
 
 To define the settings as a secure variable, in Nerdio manager, select Settings->Nerdio Environment, and create a 
 new secure variable called RegionSettings. The value for this variable should be in the following format:
 
-{"nation" : "223", "mui" : "de-DE", "muifallback" : "en-US", "locale" : "de-ch", "keyboardLayout" : "0807:00000807,100C:0000100C"}
+{"nation" : "242", "mui" : "en-GB", "muifallback" : "en-US", "locale" : "en-GB", "keyboardLayout" : "0809:00000809"}
+
+Default settings (English United Kingdom):
+- Nation (GeoID): 242 (United Kingdom)
+- MUI: en-GB
+- MUI Fallback: en-US
+- Locale: en-GB
+- Keyboard Layout: 0809:00000809 (UK English)
 
 References for regional settings:
 Nations:          https://docs.microsoft.com/en-us/windows/win32/intl/table-of-geographical-locations
@@ -33,26 +40,41 @@ https://github.com/alphasteff
 <# Un-comment and modify the following variable definition to specify the region settings in this script
  
 $JsonParams = '{
-"nation" : "223",
-"mui" : "de-DE",
+"nation" : "242",
+"mui" : "en-GB",
 "muifallback" : "en-US",
-"locale" : "de-ch",
-"keyboardLayout" : "0807:00000807,100C:0000100C"
+"locale" : "en-GB",
+"keyboardLayout" : "0809:00000809"
 }'
 
 #>
+
+# Default regional settings for English (United Kingdom)
+$defaultRegionSettings = @{
+    nation = "242"
+    mui = "en-GB"
+    muifallback = "en-US"
+    locale = "en-GB"
+    keyboardLayout = "0809:00000809"
+}
 
 # Set Error action
 $errorActionPreference = "Stop"
 
 
-# Get region settings from script or Nerdio Secure Variable
-
+# Get region settings from script, Nerdio Secure Variable, or use defaults (English United Kingdom)
 
 if (!$JsonParams){
     if (!$SecureVars.RegionSettings) {
-        Write-Error 'Parameters not set. Either define a RegionSettings secure variable or specify the region settings in the $JsonParams variable in this script'
-        Throw 'Parameters not set. Either define a RegionSettings secure variable or specify the region settings in the $JsonParams variable in this script'
+        # Use default English United Kingdom settings
+        Write-Output "INFO: No region settings specified. Using default: English (United Kingdom)"
+        $JsonParams = @{
+            nation = $defaultRegionSettings.nation
+            mui = $defaultRegionSettings.mui
+            muifallback = $defaultRegionSettings.muifallback
+            locale = $defaultRegionSettings.locale
+            keyboardLayout = $defaultRegionSettings.keyboardLayout
+        } | ConvertTo-Json -Compress
     } 
     else {
         $JsonParams = $SecureVars.RegionSettings
@@ -74,8 +96,12 @@ if (!($VMStatus.Statuses.code -match 'running')) {
 }
 
 Try {
-    # Convert tag value to PSCustomObject
-    $regionalSettings =  $JsonParams | ConvertFrom-Json
+    # Convert JSON string to PSCustomObject (if it's a string) or use object directly
+    if ($JsonParams -is [string]) {
+        $regionalSettings = $JsonParams | ConvertFrom-Json
+    } else {
+        $regionalSettings = $JsonParams
+    }
 
     # Create the hashtable for the parameters
     $parameters = @{
@@ -85,6 +111,13 @@ Try {
         locale = $regionalSettings.locale
         keyboardLayout = $regionalSettings.keyboardLayout
     }
+    
+    Write-Output "INFO: Configuring regional settings:"
+    Write-Output "  Nation (GeoID): $($parameters.nation)"
+    Write-Output "  MUI: $($parameters.mui)"
+    Write-Output "  MUI Fallback: $($parameters.muifallback)"
+    Write-Output "  Locale: $($parameters.locale)"
+    Write-Output "  Keyboard Layout: $($parameters.keyboardLayout)"
 
     Write-Output ('INFO: Parameters for RunCommand: ' + ($parameters | Out-String))
 
