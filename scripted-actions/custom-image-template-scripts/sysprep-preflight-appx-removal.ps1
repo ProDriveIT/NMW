@@ -158,7 +158,7 @@ try {
                                     if ($encPercent -eq 0 -or $encPercent -lt 0.1) {
                                         # Percentage is 0, verify status
                                         if ($status -match "Conversion Status:\s*Fully Decrypted" -or $status -match "Conversion Status:\s*None") {
-                                            Write-Host "    ✓ BitLocker decryption completed successfully (0`% encrypted verified)" -ForegroundColor Green
+                                            Write-Host "    [OK] BitLocker decryption completed successfully (0`% encrypted verified)" -ForegroundColor Green
                                             break
                                         } else {
                                             # Percentage is 0 but status hasn't updated - wait a bit more
@@ -177,7 +177,7 @@ try {
                                     
                                     $elapsed = (Get-Date) - $startTime
                                     if ($elapsed.TotalSeconds -gt $maxWaitTime) {
-                                        Write-Host "    ⚠ Timeout waiting for decryption (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
+                                        Write-Host "    [WARN] Timeout waiting for decryption (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
                                         Write-Host "    Current status: $encPercent`% still encrypted. Decryption may still be in progress." -ForegroundColor Yellow
                                         break
                                     }
@@ -244,7 +244,7 @@ try {
                         if ($encPercent -eq 0 -or $encPercent -lt 0.1) {
                             # Percentage is 0, verify status
                             if ($status -match "Conversion Status:\s*Fully Decrypted" -or $status -match "Conversion Status:\s*None") {
-                                Write-Host "    ✓ BitLocker decryption completed successfully (0`% encrypted verified)" -ForegroundColor Green
+                                Write-Host "    [OK] BitLocker decryption completed successfully (0`% encrypted verified)" -ForegroundColor Green
                                 break
                             } else {
                                 # Percentage is 0 but status hasn't updated - wait a bit more
@@ -252,7 +252,7 @@ try {
                                 Start-Sleep -Seconds 5
                                 $verifyStatus = & manage-bde.exe -status $vol 2>&1
                                 if ($verifyStatus -match "Percentage Encrypted:\s*0%") {
-                                    Write-Host "    ✓ BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
+                                    Write-Host "    [OK] BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
                                     break
                                 }
                             }
@@ -264,7 +264,7 @@ try {
                         # Check for timeout
                         $elapsed = (Get-Date) - $startTime
                         if ($elapsed.TotalSeconds -gt $maxWaitTime) {
-                            Write-Host "    ⚠ Timeout waiting for decryption (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
+                            Write-Host "    [WARN] Timeout waiting for decryption (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
                             Write-Host "    Current status: $encPercent`% still encrypted. Decryption may still be in progress." -ForegroundColor Yellow
                             break
                         }
@@ -276,7 +276,7 @@ try {
         }
         
         if (-not $foundEncrypted) {
-            Write-Host "✓ No encrypted volumes found. BitLocker is already disabled or not configured." -ForegroundColor Green
+            Write-Host "[OK] No encrypted volumes found. BitLocker is already disabled or not configured." -ForegroundColor Green
         }
     }
 }
