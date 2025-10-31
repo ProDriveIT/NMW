@@ -71,10 +71,10 @@ try {
                                     $remainingPercent = $currentPercentage
                                     
                                     if ($currentStatus -eq "DecryptionInProgress") {
-                                        Write-Host "    Progress: $decryptedPercent% decrypted, $remainingPercent% remaining... (Status: $currentStatus)" -ForegroundColor Cyan
+                                        Write-Host "    Progress: $decryptedPercent`% decrypted, $remainingPercent`% remaining... (Status: $currentStatus)" -ForegroundColor Cyan
                                         $lastPercentage = $currentPercentage
                                     } elseif ($currentStatus -ne "DecryptionInProgress" -and $currentPercentage -gt 0) {
-                                        Write-Host "    Status changed to: $currentStatus, but still $remainingPercent% encrypted..." -ForegroundColor Yellow
+                                        Write-Host "    Status changed to: $currentStatus, but still $remainingPercent`% encrypted..." -ForegroundColor Yellow
                                         Write-Host "    Continuing to wait for decryption to complete..." -ForegroundColor Cyan
                                         $lastPercentage = $currentPercentage
                                     }
@@ -85,21 +85,21 @@ try {
                                 if ($currentPercentage -eq 0 -or $currentPercentage -lt 0.1) {
                                     # Double-check the status to ensure it's truly decrypted
                                     if ($currentStatus -eq "FullyDecrypted" -or $currentStatus -eq "DecryptionComplete" -or $currentStatus -eq "VolumeUnprotected") {
-                                        Write-Host "    ✓ BitLocker decryption completed successfully (0% encrypted)" -ForegroundColor Green
+                                        Write-Host "    ✓ BitLocker decryption completed successfully (0`% encrypted)" -ForegroundColor Green
                                         break
                                     } else {
                                         # Percentage is 0 but status hasn't updated yet - wait a bit more
-                                        Write-Host "    EncryptionPercentage is 0%, waiting for status to update..." -ForegroundColor Cyan
+                                        Write-Host "    EncryptionPercentage is 0`%, waiting for status to update..." -ForegroundColor Cyan
                                         Start-Sleep -Seconds 5
                                         $verifyVolume = Get-BitLockerVolume -MountPoint $volume.MountPoint -ErrorAction SilentlyContinue
                                         if ($verifyVolume -and ($verifyVolume.EncryptionPercentage -eq 0 -or $verifyVolume.EncryptionPercentage -lt 0.1)) {
-                                            Write-Host "    ✓ BitLocker decryption completed successfully (verified 0% encrypted)" -ForegroundColor Green
+                                            Write-Host "    ✓ BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
                                             break
                                         }
                                     }
                                 } elseif ($currentStatus -eq "FullyDecrypted" -or $currentStatus -eq "DecryptionComplete") {
                                     # Status says decrypted but percentage isn't 0 yet - keep waiting
-                                    Write-Host "    Status reports '$currentStatus' but $remainingPercent% still encrypted. Continuing to wait..." -ForegroundColor Yellow
+                                    Write-Host "    Status reports '$currentStatus' but $remainingPercent`% still encrypted. Continuing to wait..." -ForegroundColor Yellow
                                 }
                                 
                                 # Check for errors
@@ -147,9 +147,9 @@ try {
                                     if ($encPercent -ne $lastEncPercent) {
                                         $decPercent = 100 - $encPercent
                                         if ($status -match "Conversion Status:\s*Decryption in progress") {
-                                            Write-Host "    Progress: $decPercent% decrypted, $encPercent% remaining..." -ForegroundColor Cyan
+                                            Write-Host "    Progress: $decPercent`% decrypted, $encPercent`% remaining..." -ForegroundColor Cyan
                                         } else {
-                                            Write-Host "    Progress: $decPercent% decrypted, $encPercent% remaining... (Status may show otherwise)" -ForegroundColor Yellow
+                                            Write-Host "    Progress: $decPercent`% decrypted, $encPercent`% remaining... (Status may show otherwise)" -ForegroundColor Yellow
                                         }
                                         $lastEncPercent = $encPercent
                                     }
@@ -158,27 +158,27 @@ try {
                                     if ($encPercent -eq 0 -or $encPercent -lt 0.1) {
                                         # Percentage is 0, verify status
                                         if ($status -match "Conversion Status:\s*Fully Decrypted" -or $status -match "Conversion Status:\s*None") {
-                                            Write-Host "    ✓ BitLocker decryption completed successfully (0% encrypted verified)" -ForegroundColor Green
+                                            Write-Host "    ✓ BitLocker decryption completed successfully (0`% encrypted verified)" -ForegroundColor Green
                                             break
                                         } else {
                                             # Percentage is 0 but status hasn't updated - wait a bit more
-                                            Write-Host "    Percentage is 0%, waiting for status to update..." -ForegroundColor Cyan
+                                            Write-Host "    Percentage is 0`%, waiting for status to update..." -ForegroundColor Cyan
                                             Start-Sleep -Seconds 5
                                             $verifyStatus = & manage-bde.exe -status $volume.MountPoint 2>&1
                                             if ($verifyStatus -match "Percentage Encrypted:\s*0%") {
-                                                Write-Host "    ✓ BitLocker decryption completed successfully (verified 0% encrypted)" -ForegroundColor Green
+                                                Write-Host "    ✓ BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
                                                 break
                                             }
                                         }
                                     } elseif ($status -match "Conversion Status:\s*Fully Decrypted") {
                                         # Status says decrypted but percentage isn't 0 - keep waiting
-                                        Write-Host "    Status reports 'Fully Decrypted' but $encPercent% still encrypted. Continuing to wait..." -ForegroundColor Yellow
+                                        Write-Host "    Status reports 'Fully Decrypted' but $encPercent`% still encrypted. Continuing to wait..." -ForegroundColor Yellow
                                     }
                                     
                                     $elapsed = (Get-Date) - $startTime
                                     if ($elapsed.TotalSeconds -gt $maxWaitTime) {
                                         Write-Host "    ⚠ Timeout waiting for decryption (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
-                                        Write-Host "    Current status: $encPercent% still encrypted. Decryption may still be in progress." -ForegroundColor Yellow
+                                        Write-Host "    Current status: $encPercent`% still encrypted. Decryption may still be in progress." -ForegroundColor Yellow
                                         break
                                     }
                                 } while ($true)
@@ -233,9 +233,9 @@ try {
                         if ($encPercent -ne $lastEncPercent) {
                             $decPercent = 100 - $encPercent
                             if ($status -match "Conversion Status:\s*Decryption in progress") {
-                                Write-Host "    Progress: $decPercent% decrypted, $encPercent% remaining..." -ForegroundColor Cyan
+                                Write-Host "    Progress: $decPercent`% decrypted, $encPercent`% remaining..." -ForegroundColor Cyan
                             } else {
-                                Write-Host "    Progress: $decPercent% decrypted, $encPercent% remaining... (Status may show otherwise)" -ForegroundColor Yellow
+                                Write-Host "    Progress: $decPercent`% decrypted, $encPercent`% remaining... (Status may show otherwise)" -ForegroundColor Yellow
                             }
                             $lastEncPercent = $encPercent
                         }
@@ -244,28 +244,28 @@ try {
                         if ($encPercent -eq 0 -or $encPercent -lt 0.1) {
                             # Percentage is 0, verify status
                             if ($status -match "Conversion Status:\s*Fully Decrypted" -or $status -match "Conversion Status:\s*None") {
-                                Write-Host "    ✓ BitLocker decryption completed successfully (0% encrypted verified)" -ForegroundColor Green
+                                Write-Host "    ✓ BitLocker decryption completed successfully (0`% encrypted verified)" -ForegroundColor Green
                                 break
                             } else {
                                 # Percentage is 0 but status hasn't updated - wait a bit more
-                                Write-Host "    Percentage is 0%, waiting for status to update..." -ForegroundColor Cyan
+                                Write-Host "    Percentage is 0`%, waiting for status to update..." -ForegroundColor Cyan
                                 Start-Sleep -Seconds 5
                                 $verifyStatus = & manage-bde.exe -status $vol 2>&1
                                 if ($verifyStatus -match "Percentage Encrypted:\s*0%") {
-                                    Write-Host "    ✓ BitLocker decryption completed successfully (verified 0% encrypted)" -ForegroundColor Green
+                                    Write-Host "    ✓ BitLocker decryption completed successfully (verified 0`% encrypted)" -ForegroundColor Green
                                     break
                                 }
                             }
                         } elseif ($status -match "Conversion Status:\s*Fully Decrypted") {
                             # Status says decrypted but percentage isn't 0 - keep waiting
-                            Write-Host "    Status reports 'Fully Decrypted' but $encPercent% still encrypted. Continuing to wait..." -ForegroundColor Yellow
+                            Write-Host "    Status reports 'Fully Decrypted' but $encPercent`% still encrypted. Continuing to wait..." -ForegroundColor Yellow
                         }
                         
                         # Check for timeout
                         $elapsed = (Get-Date) - $startTime
                         if ($elapsed.TotalSeconds -gt $maxWaitTime) {
                             Write-Host "    ⚠ Timeout waiting for decryption (waited $($maxWaitTime) seconds)" -ForegroundColor Yellow
-                            Write-Host "    Current status: $encPercent% still encrypted. Decryption may still be in progress." -ForegroundColor Yellow
+                            Write-Host "    Current status: $encPercent`% still encrypted. Decryption may still be in progress." -ForegroundColor Yellow
                             break
                         }
                     } while ($true)
