@@ -6,56 +6,126 @@ This guide will help you set up infrastructure for Azure Virtual Desktop Custom 
 
 Before you begin, ensure you have:
 
-- **Azure CLI** installed ([Download here](https://aka.ms/installazurecliwindows))
+- **Access to Azure Portal** - You'll use Azure Cloud Shell (no installation required)
 - **Global Administrator** role in Azure AD
 - **Owner** role on the target subscription
-- **Azure CLI logged in** (`az login`)
+- **Signed in to Azure Portal** - Cloud Shell uses your portal session automatically
 
-## Step 1: Run Infrastructure Setup
+---
 
-Run the setup script to create all required infrastructure:
+## ⚠️ IMPORTANT: Run Script First
+
+**You MUST complete Step 1 (run the setup script) BEFORE going to the Azure Portal.** The portal wizard requires infrastructure that the script creates.
+
+---
+
+## Step 1: Run Infrastructure Setup (Required First Step)
+
+### 1.1 Open Azure Cloud Shell
+
+1. **Sign in to Azure Portal**: Go to [https://portal.azure.com](https://portal.azure.com) and sign in
+2. **Open Cloud Shell**: 
+   - Click the **Cloud Shell icon** (`>_`) at the top of the portal (usually next to the search bar)
+   - If prompted to choose **Bash** or **PowerShell**, select **PowerShell**
+   - Wait for Cloud Shell to initialize (first time may take a minute)
+   - You'll see a terminal window at the bottom of the portal
+
+> **Note**: Cloud Shell is pre-authenticated with your portal session - no need to run `az login`
+
+### 1.2 Clone the Repository and Run the Script
+
+In the Cloud Shell terminal, run these commands:
 
 ```powershell
-.\setup-avd-cit-infrastructure.ps1
+# Clone the repository
+git clone https://github.com/ProDriveIT/NMW.git
+
+# Navigate to the CIT Deployment folder
+cd NMW/"CIT Deployment"
+
+# Run the setup script
+./setup-avd-cit-infrastructure.ps1
 ```
 
-**What the script does:**
-- Prompts for subscription ID (or uses current)
-- Registers required resource providers
+**When prompted for subscription ID:**
+- Press **Enter** to use your current subscription, OR
+- Enter your subscription ID and press **Enter**
+
+> **Note**: The script uses Azure CLI commands which work identically in Cloud Shell. Cloud Shell already has the latest Azure CLI installed.
+
+### 1.3 What the Script Does
+
+The script automatically:
+- Registers required resource providers (Microsoft.VirtualMachineImages, etc.)
 - Creates resource group: `rg-avd-cit-infrastructure`
 - Creates managed identity: `umi-avd-cit`
 - Creates image gallery: `gal-avd-images`
 - Creates storage account (optional, for scripts)
-- Configures all required permissions
+- Creates custom RBAC role with required permissions
+- Assigns all necessary role assignments
 
-**What to save from the output:**
-- **Managed Identity Resource ID** - You'll need this in the portal wizard
-- Gallery name: `gal-avd-images`
+The script takes approximately 2-5 minutes to complete.
+
+### 1.4 Save This Information (Required for Portal)
+
+**⚠️ CRITICAL: Copy and save these values from the script output before proceeding to the portal:**
+
+1. **Managed Identity Resource ID** - This is a long path that looks like:
+   ```
+   /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rg-avd-cit-infrastructure/providers/Microsoft.ManagedIdentity/userAssignedIdentities/umi-avd-cit
+   ```
+   **Copy this entire line** - you'll paste it into the portal wizard.
+
+2. **Gallery Name**: `gal-avd-images`
+
+3. **Resource Group Name**: `rg-avd-cit-infrastructure`
+
+4. **Location** (region): The region where resources were created (e.g., `eastus`)
+
+**Keep this information handy** - you'll need it in Step 2.
+
+---
 
 ## Step 2: Create Custom Image Template in Azure Portal
 
+> **Note**: Only proceed to this step after successfully completing Step 1 and saving the Managed Identity Resource ID.
+
 ### 2.1 Navigate to Custom Image Templates
 
-1. Sign in to [Azure Portal](https://portal.azure.com)
-2. In the search bar, type **Azure Virtual Desktop** and select it
-3. In the left menu, select **Custom image templates**
-4. Click **+ Add custom image template** or **Create**
+> **Note**: If you have Cloud Shell open, you can keep it open in the background. The portal navigation works independently.
+
+1. **In Azure Portal** (same portal window where Cloud Shell is running):
+   - **Search for Azure Virtual Desktop**:
+     - Click the **search bar** at the top of the portal (or press `/`)
+     - Type: `Azure Virtual Desktop`
+     - Click on **Azure Virtual Desktop** in the results
+2. **Navigate to Custom Image Templates**:
+   - In the left-hand menu, scroll down and click **Custom image templates**
+   - You should see the Custom image templates page
+3. **Start Creation**:
+   - Click the **+ Create** button (or **+ Add custom image template**)
+
+You should now see the "Create a custom image template" wizard with multiple tabs at the top.
 
 ### 2.2 Basics Tab
 
-Complete the following:
+Complete the following fields in order:
 
-| Field | Value |
-|-------|-------|
-| Template name | Enter a descriptive name (e.g., "AVD-GoldenImage-v1") |
-| Import from existing template | No |
-| Subscription | Select your subscription |
-| Resource group | Select `rg-avd-cit-infrastructure` |
-| Location | Select the same region where infrastructure was created |
-| Managed identity | **Select "User-assigned managed identity"** |
-| | **Paste the Resource ID from Step 1 output** |
+| Field | What to Enter |
+|-------|---------------|
+| **Template name** | Enter a descriptive name (e.g., `AVD-GoldenImage-v1` or `Windows11-AVD-SessionHost`) |
+| **Import from existing template** | Leave as **No** |
+| **Subscription** | Select your subscription from the dropdown |
+| **Resource group** | Select `rg-avd-cit-infrastructure` from the dropdown (created in Step 1) |
+| **Location** | Select the same region you used in Step 1 (e.g., `East US`) |
+| **Managed identity** | **CRITICAL**: Select the dropdown and choose **User-assigned managed identity** |
+| | Then click in the **Managed identity** field below and **paste the Resource ID** you saved from Step 1.3 |
+| | The field should show: `umi-avd-cit / rg-avd-cit-infrastructure` after pasting |
 
-Click **Next**.
+**Verify** the Managed identity field shows your managed identity before proceeding.
+
+Click **Next** at the bottom right.
+
 
 ### 2.3 Source Image Tab
 
@@ -153,8 +223,13 @@ Click **+ Add your own script**:
    
    **Recommended: GitHub Raw URL**
    ```
-   https://raw.githubusercontent.com/[your-org]/NMW/main/scripted-actions/custom-image-template-scripts/[script-name].ps1
+   https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/[script-name].ps1
    ```
+   
+   **Example URLs from this repository:**
+   - Windows Optimizations: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/enable-windows-optimizations.ps1`
+   - FSLogix: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/install-enable-fslogix.ps1`
+   - Teams: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/configure-teams-optimizations.ps1`
    
    **Alternative: Storage Account with SAS Token**
    ```
@@ -239,14 +314,15 @@ If you see permission errors:
 ### Resource Provider Not Registered
 
 If you see resource provider errors:
-- Re-run the setup script (it will register missing providers)
-- Or manually register: `az provider register --namespace Microsoft.VirtualMachineImages`
+- Re-run the setup script in Cloud Shell (it will register missing providers)
+- Or manually register in Cloud Shell: `az provider register --namespace Microsoft.VirtualMachineImages`
 
 ## Reference Scripts
 
 Scripts are available in this repository:
-- Location: `scripted-actions/custom-image-template-scripts/`
-- GitHub URLs: `https://raw.githubusercontent.com/[your-org]/NMW/main/scripted-actions/custom-image-template-scripts/[script-name].ps1`
+- **Repository**: [https://github.com/ProDriveIT/NMW](https://github.com/ProDriveIT/NMW)
+- **Location**: `scripted-actions/custom-image-template-scripts/`
+- **GitHub URLs**: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/[script-name].ps1`
 
 **Available Scripts:**
 - `enable-windows-optimizations.ps1` - Comprehensive AVD optimizations
