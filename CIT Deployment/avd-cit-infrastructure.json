@@ -1,0 +1,236 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionId": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure subscription ID"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "eastus",
+      "metadata": {
+        "description": "Location for all resources"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "rg-avd-cit-infrastructure",
+      "metadata": {
+        "description": "Name of the resource group (will be created if it doesn't exist)"
+      }
+    },
+    "managedIdentityName": {
+      "type": "string",
+      "defaultValue": "umi-avd-cit",
+      "metadata": {
+        "description": "Name of the user-assigned managed identity"
+      }
+    },
+    "galleryName": {
+      "type": "string",
+      "defaultValue": "gal-avd-images",
+      "metadata": {
+        "description": "Name of the Azure Compute Gallery"
+      }
+    },
+    "galleryDescription": {
+      "type": "string",
+      "defaultValue": "Azure Virtual Desktop Custom Images",
+      "metadata": {
+        "description": "Description for the Azure Compute Gallery"
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the storage account (auto-generated if empty). Must be globally unique, 3-24 characters, lowercase letters and numbers only."
+      }
+    },
+    "storageContainerName": {
+      "type": "string",
+      "defaultValue": "scripts",
+      "metadata": {
+        "description": "Name of the storage container for scripts"
+      }
+    },
+    "createStorageAccount": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Whether to create a storage account"
+      }
+    }
+  },
+  "variables": {
+    "customRoleName": "AVD Custom Image Builder Role",
+    "storageAccountNameFinal": "[if(empty(parameters('storageAccountName')), concat('stavdcitscripts', uniqueString(resourceGroup().id)), parameters('storageAccountName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[parameters('managedIdentityName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "Purpose": "AVD Custom Image Templates"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(subscription().subscriptionId, variables('customRoleName'))]",
+      "scope": "[subscription().id]",
+      "properties": {
+        "roleName": "[variables('customRoleName')]",
+        "description": "Custom role for Azure Virtual Desktop Custom Image Builder with required permissions for galleries and images",
+        "type": "CustomRole",
+        "permissions": [
+          {
+            "actions": [
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/images/read",
+              "Microsoft.Compute/galleries/images/versions/read",
+              "Microsoft.Compute/galleries/images/versions/write",
+              "Microsoft.Compute/images/write",
+              "Microsoft.Compute/images/read",
+              "Microsoft.Compute/images/delete"
+            ],
+            "notActions": []
+          }
+        ],
+        "assignableScopes": [
+          "[subscription().id]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/galleries",
+      "apiVersion": "2022-03-03",
+      "name": "[parameters('galleryName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "description": "[parameters('galleryDescription')]"
+      },
+      "dependsOn": []
+    },
+    {
+      "condition": "[parameters('createStorageAccount')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('storageAccountNameFinal')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true
+      },
+      "tags": {
+        "Purpose": "AVD Custom Image Templates Scripts"
+      }
+    },
+    {
+      "condition": "[parameters('createStorageAccount')]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2022-09-01",
+      "name": "[concat(variables('storageAccountNameFinal'), '/default/', parameters('storageContainerName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountNameFinal'))]"
+      ],
+      "properties": {
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, parameters('managedIdentityName'), 'custom-role-rg')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().subscriptionId, variables('customRoleName')))]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))).principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().subscriptionId, variables('customRoleName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, parameters('managedIdentityName'), 'custom-role-gallery')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().subscriptionId, variables('customRoleName')))]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))).principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "scope": "[resourceId('Microsoft.Compute/galleries', parameters('galleryName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().subscriptionId, variables('customRoleName')))]",
+        "[resourceId('Microsoft.Compute/galleries', parameters('galleryName'))]"
+      ]
+    },
+    {
+      "condition": "[parameters('createStorageAccount')]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, parameters('managedIdentityName'), 'storage-reader')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))).principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountNameFinal'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountNameFinal'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "value": "[parameters('resourceGroupName')]"
+    },
+    "managedIdentityResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+    },
+    "managedIdentityPrincipalId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))).principalId]"
+    },
+    "galleryName": {
+      "type": "string",
+      "value": "[parameters('galleryName')]"
+    },
+    "galleryResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Compute/galleries', parameters('galleryName'))]"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "condition": "[parameters('createStorageAccount')]",
+      "value": "[variables('storageAccountNameFinal')]"
+    },
+    "storageContainerUrl": {
+      "type": "string",
+      "condition": "[parameters('createStorageAccount')]",
+      "value": "[concat('https://', variables('storageAccountNameFinal'), '.blob.core.windows.net/', parameters('storageContainerName'), '/')]"
+    },
+    "customRoleName": {
+      "type": "string",
+      "value": "[variables('customRoleName')]"
+    }
+  }
+}
+
