@@ -51,7 +51,7 @@ cd NMW/"CIT Deployment"
 - Press **Enter** to use your current subscription, OR
 - Enter your subscription ID and press **Enter**
 
-> **Note**: The script uses Azure CLI commands which work identically in Cloud Shell. Cloud Shell already has the latest Azure CLI installed.
+> **Note**: The script uses Azure CLI commands. **No installation needed** - Azure CLI is already built into Cloud Shell and ready to use.
 
 ### 1.3 What the Script Does
 
