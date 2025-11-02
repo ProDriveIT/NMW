@@ -10,7 +10,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "eastus",
+      "defaultValue": "uksouth",
       "metadata": {
         "description": "Location for all resources"
       }

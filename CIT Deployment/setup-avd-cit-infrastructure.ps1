@@ -49,7 +49,7 @@ $ManagedIdentityName = "umi-avd-cit"
 $GalleryName = "gal_avd_images"
 $CustomRoleName = "AVD Custom Image Builder Role"
 $StorageContainerName = "scripts"
-$Location = "eastus"
+$Location = "uksouth"
 
 # Required resource providers
 $RequiredProviders = @(

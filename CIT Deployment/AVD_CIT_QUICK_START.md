@@ -76,7 +76,7 @@ The script takes approximately 15-20 minutes to complete, as resource provider r
 
 3. **Resource Group Name**: `rg-avd-cit-infrastructure`
 
-4. **Location** (region): The region where resources were created (e.g., `eastus`)
+4. **Location** (region): The region where resources were created (e.g., `uksouth` or `UK South`)
 
 ---
 
@@ -111,7 +111,7 @@ Complete the following fields in order:
 | **Import from existing template** | Leave as **No** |
 | **Subscription** | Select your subscription from the dropdown |
 | **Resource group** | Select `rg-avd-cit-infrastructure` from the dropdown (created in Step 1) |
-| **Location** | Select the same region you used in Step 1 (e.g., `East US`) |
+| **Location** | Select the same region you used in Step 1 (e.g., `UK South`) |
 | **Managed identity** | **CRITICAL**: Select the dropdown and choose **User-assigned managed identity** |
 | | Then click in the **Managed identity** field below - it will show a list of available managed identities |
 | | Select **`umi-avd-cit`** from the list (you should see: `umi-avd-cit / rg-avd-cit-infrastructure`) |
