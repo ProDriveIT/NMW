@@ -50,6 +50,10 @@ $GalleryName = "gal_avd_images"
 $CustomRoleName = "AVD Custom Image Builder Role"
 $StorageContainerName = "scripts"
 $Location = "uksouth"
+$GalleryImageDefinitionName = "avd_session_host"
+$GalleryImageDefinitionPublisher = "ProDriveIT"
+$GalleryImageDefinitionOffer = "avd_images"
+$GalleryImageDefinitionSku = "windows11_avd"
 
 # Required resource providers
 $RequiredProviders = @(
@@ -323,7 +327,6 @@ try {
     
     if ($existingRole.Count -gt 0) {
         Write-Success "Custom role already exists"
-        $roleDefinitionId = $existingRole[0].id
     }
     else {
         # Create role definition JSON (Azure CLI format)
@@ -346,8 +349,7 @@ try {
         $roleDefinition | ConvertTo-Json -Depth 10 | Set-Content $roleJsonPath
         
         try {
-            $roleOutput = az role definition create --role-definition $roleJsonPath --output json | ConvertFrom-Json
-            $roleDefinitionId = $roleOutput.id
+            az role definition create --role-definition $roleJsonPath --output none 2>&1 | Out-Null
             Write-Success "Custom role created"
         }
         finally {
@@ -437,15 +439,50 @@ try {
         $galleryResourceId = $gallery.id
     }
     else {
+        Write-Host "  Creating gallery..." -NoNewline
         $gallery = az sig create `
             --resource-group $ResourceGroupName `
             --gallery-name $GalleryName `
             --location $Location `
             --description "Azure Virtual Desktop Custom Images" `
-            --output json | ConvertFrom-Json
+            --output json 2>&1
         
+        # Check if creation succeeded
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host " failed" -ForegroundColor Red
+            throw "Failed to create gallery: $gallery"
+        }
+        
+        $gallery = $gallery | ConvertFrom-Json
         $galleryResourceId = $gallery.id
-        Write-Success "Gallery created"
+        Write-Host " created" -ForegroundColor Green
+        
+        # Wait for gallery to fully propagate (portal sometimes caches)
+        Write-Host "  Waiting for gallery to propagate..." -NoNewline
+        $maxWait = 30
+        $waitCount = 0
+        $verified = $false
+        
+        while ($waitCount -lt $maxWait -and -not $verified) {
+            Start-Sleep -Seconds 2
+            $verifyGallery = az sig show `
+                --resource-group $ResourceGroupName `
+                --gallery-name $GalleryName `
+                --output json 2>$null | ConvertFrom-Json
+            
+            if ($verifyGallery) {
+                $verified = $true
+            }
+            $waitCount++
+        }
+        
+        if ($verified) {
+            Write-Host " verified" -ForegroundColor Green
+        }
+        else {
+            Write-Host " still propagating" -ForegroundColor Yellow
+            Write-Host "    Gallery may take a few minutes to appear in portal. You can continue." -ForegroundColor Gray
+        }
     }
     
     # Assign custom role on gallery
@@ -473,6 +510,43 @@ try {
     catch {
         Write-Warning-Message "Failed to assign role on gallery (non-critical): $_"
     }
+    
+    # Create gallery image definition
+    try {
+        $imageDefinition = az sig image-definition show `
+            --resource-group $ResourceGroupName `
+            --gallery-name $GalleryName `
+            --gallery-image-definition $GalleryImageDefinitionName `
+            --output json 2>$null | ConvertFrom-Json
+        
+        if ($imageDefinition) {
+            Write-Success "Gallery image definition already exists: $GalleryImageDefinitionName"
+        }
+        else {
+            Write-Host "  Creating gallery image definition..." -NoNewline
+            az sig image-definition create `
+                --resource-group $ResourceGroupName `
+                --gallery-name $GalleryName `
+                --gallery-image-definition $GalleryImageDefinitionName `
+                --publisher $GalleryImageDefinitionPublisher `
+                --offer $GalleryImageDefinitionOffer `
+                --sku $GalleryImageDefinitionSku `
+                --os-type Windows `
+                --hyper-v-generation V2 `
+                --output none 2>&1 | Out-Null
+            
+            Write-Host " created" -ForegroundColor Green
+            Write-Host "    Definition name: $GalleryImageDefinitionName" -ForegroundColor Gray
+            Write-Host "    Publisher: $GalleryImageDefinitionPublisher" -ForegroundColor Gray
+            Write-Host "    Offer: $GalleryImageDefinitionOffer" -ForegroundColor Gray
+            Write-Host "    SKU: $GalleryImageDefinitionSku" -ForegroundColor Gray
+            Write-Host "    Generation: V2 (Gen2)" -ForegroundColor Gray
+        }
+    }
+    catch {
+        Write-Warning-Message "Failed to create gallery image definition (non-critical): $_"
+        Write-Host "    You can create the image definition manually in the portal or during template creation." -ForegroundColor Yellow
+    }
 }
 catch {
     Write-Error-Message "Failed to create gallery: $_"
@@ -481,44 +555,48 @@ catch {
 
 Write-Step "[Step 7] Creating storage account..."
 
+# Initialize storage account name variable
+$storageAccountName = $null
+
 try {
-    # Generate unique storage account name
-    $baseStorageName = "stavdcitscripts"
-    $randomSuffix = Get-Random -Minimum 1000 -Maximum 9999
-    $storageAccountName = "$baseStorageName$randomSuffix"
-    
-    # Check if name is available, try variations if needed
-    $maxAttempts = 10
-    $attempt = 0
-    $nameAvailable = $false
-    
-    while ($attempt -lt $maxAttempts -and -not $nameAvailable) {
-        $checkResult = az storage account check-name --name $storageAccountName --output json | ConvertFrom-Json
-        
-        if ($checkResult.nameAvailable) {
-            $nameAvailable = $true
-        }
-        else {
-            $randomSuffix = Get-Random -Minimum 1000 -Maximum 9999
-            $storageAccountName = "$baseStorageName$randomSuffix"
-            $attempt++
-        }
-    }
-    
-    if (-not $nameAvailable) {
-        throw "Could not find available storage account name after $maxAttempts attempts"
-    }
-    
-    # Check if storage account already exists in resource group
-    $existingStorage = az storage account show `
+    # First, check if a storage account already exists in the resource group
+    $existingStorageAccounts = az storage account list `
         --resource-group $ResourceGroupName `
-        --name $storageAccountName `
-        --output json 2>$null | ConvertFrom-Json
+        --output json | ConvertFrom-Json
     
-    if ($existingStorage) {
+    if ($existingStorageAccounts.Count -gt 0) {
+        $storageAccountName = $existingStorageAccounts[0].name
         Write-Success "Storage account already exists: $storageAccountName"
     }
     else {
+        # Generate unique storage account name
+        $baseStorageName = "stavdcitscripts"
+        $randomSuffix = Get-Random -Minimum 1000 -Maximum 9999
+        $storageAccountName = "$baseStorageName$randomSuffix"
+        
+        # Check if name is available, try variations if needed
+        $maxAttempts = 10
+        $attempt = 0
+        $nameAvailable = $false
+        
+        while ($attempt -lt $maxAttempts -and -not $nameAvailable) {
+            $checkResult = az storage account check-name --name $storageAccountName --output json | ConvertFrom-Json
+            
+            if ($checkResult.nameAvailable) {
+                $nameAvailable = $true
+            }
+            else {
+                $randomSuffix = Get-Random -Minimum 1000 -Maximum 9999
+                $storageAccountName = "$baseStorageName$randomSuffix"
+                $attempt++
+            }
+        }
+        
+        if (-not $nameAvailable) {
+            throw "Could not find available storage account name after $maxAttempts attempts"
+        }
+        
+        Write-Host "  Creating storage account: $storageAccountName..." -NoNewline
         az storage account create `
             --resource-group $ResourceGroupName `
             --name $storageAccountName `
@@ -527,7 +605,17 @@ try {
             --kind StorageV2 `
             --output none 2>&1 | Out-Null
         
-        Write-Success "Storage account created: $storageAccountName"
+        Write-Host " created" -ForegroundColor Green
+    }
+    
+    # Verify storage account exists
+    $existingStorage = az storage account show `
+        --resource-group $ResourceGroupName `
+        --name $storageAccountName `
+        --output json 2>$null | ConvertFrom-Json
+    
+    if (-not $existingStorage) {
+        throw "Storage account creation failed or cannot be found"
     }
     
     # Create container
@@ -616,6 +704,10 @@ Write-Host "    Resource ID: $identityResourceId"
 Write-Host ""
 Write-Host "  Image Gallery: $GalleryName"
 Write-Host "    Resource ID: $galleryResourceId"
+Write-Host "    Image Definition: $GalleryImageDefinitionName"
+Write-Host "      Publisher: $GalleryImageDefinitionPublisher"
+Write-Host "      Offer: $GalleryImageDefinitionOffer"
+Write-Host "      SKU: $GalleryImageDefinitionSku"
 Write-Host ""
 
 if ($storageAccountName) {
@@ -640,7 +732,8 @@ Write-Host ""
 Write-Host "4. On the Distribution targets tab:"
 Write-Host "   - Select 'Azure Compute Gallery'"
 Write-Host "   - Gallery name: $GalleryName"
-Write-Host "   - Create a new Gallery image definition (if needed)"
+Write-Host "   - Gallery image definition: $GalleryImageDefinitionName (already created)"
+Write-Host "     Or create a new one if you prefer different settings"
 Write-Host ""
 Write-Host "5. On the Customizations tab:"
 Write-Host "   - Use GitHub raw URLs for scripts (recommended):"

@@ -60,6 +60,7 @@ The script automatically:
 - Creates resource group: `rg-avd-cit-infrastructure`
 - Creates managed identity: `umi-avd-cit`
 - Creates image gallery: `gal_avd_images`
+- Creates gallery image definition: `avd_session_host` (Publisher: ProDriveIT, Offer: avd_images, SKU: windows11_avd, Gen2)
 - Creates storage account (optional, for scripts)
 - Creates custom RBAC role with required permissions
 - Assigns all necessary role assignments
@@ -73,6 +74,7 @@ The script takes approximately 15-20 minutes to complete, as resource provider r
 1. **Managed Identity Name**: `umi-avd-cit` - You'll select this from a dropdown in the portal wizard
 
 2. **Gallery Name**: `gal_avd_images`
+   - **Gallery Image Definition**: `avd_session_host` (already created)
 
 3. **Resource Group Name**: `rg-avd-cit-infrastructure`
 
@@ -142,31 +144,27 @@ Click **Next**.
 
 ### 2.4 Distribution Targets Tab
 
-**For Azure Compute Gallery (Recommended):**
+**Use Azure Compute Gallery (Required):**
 
-1. Check **Azure Compute Gallery**
+The infrastructure created in Step 1 includes an Azure Compute Gallery. You must use this gallery for distribution.
+
+1. Check **Azure Compute Gallery** (leave "Managed image" unchecked)
 2. Complete the following:
-   - **Gallery name**: `gal_avd_images` (from Step 1)
+   - **Gallery name**: Select `gal_avd_images` from the dropdown (created in Step 1)
    - **Gallery image definition**: 
-     - If no definition exists, click **Create new**
-     - Enter a name (e.g., "avd-session-host")
-     - Select **Publisher**: Your organization name
-     - Select **Offer**: e.g., "avd-images"
-     - Select **SKU**: e.g., "windows11-avd"
-     - **Generation**: Must match your source image generation (Gen1 or Gen2)
-   - **Gallery image version**: Leave blank (auto-generated) or enter a version
-   - **Replicated regions**: Select regions where you want the image stored
-   - **Excluded from latest**: No (unless you want to exclude this version)
-   - **Storage account type**: Standard_LRS or Premium_LRS
+     - Select `avd_session_host` from the dropdown (already created in Step 1)
+     - OR click **Create new** if you want different settings:
+       - Enter a name (e.g., `avd-session-host`)
+       - Select **Publisher**: Your organization name
+       - Select **Offer**: e.g., `avd-images`
+       - Select **SKU**: e.g., `windows11-avd`
+       - **Generation**: **CRITICAL** - Must match your source image generation (Gen1 or Gen2). The default definition created is Gen2 - if your source is Gen1, create a new definition with Gen1.
+   - **Gallery image version**: Leave blank (auto-generated) or enter a version like `1.0.0`
+   - **Replicated regions**: Select regions where you want the image stored (e.g., `UK South`). At minimum, select the same region as your infrastructure.
+   - **Excluded from latest**: Leave as **No** (unless you want to exclude this version from "latest" references)
+   - **Storage account type**: `Standard_LRS` (recommended) or `Premium_LRS` if you need faster performance
 
-**Optionally for Managed Image:**
-
-1. Check **Managed image**
-2. Complete:
-   - **Resource group**: `rg-avd-cit-infrastructure`
-   - **Image name**: Create new or select existing
-   - **Location**: Same as resource group
-   - **Run output name**: Any name for tracking
+> **Note**: Managed images are not recommended for AVD deployments. Azure Compute Gallery provides versioning, replication, and better management capabilities.
 
 Click **Next**.
 
@@ -278,9 +276,9 @@ Once the build completes successfully:
 2. Create a new host pool or update existing one
 3. On the **Virtual Machines** tab:
    - For **Image**, click **See all images**
-   - Select **Shared Images** (for gallery) or **My Images** (for managed image)
-   - Select your custom image
-   - **Important**: Choose a VM size that matches the generation of your source image
+   - Select **Shared Images** (your image is stored in Azure Compute Gallery)
+   - Select your custom image from the gallery (`gal_avd_images`)
+   - **Important**: Choose a VM size that matches the generation of your source image (Gen1 or Gen2)
 
 ## Troubleshooting
 
@@ -310,6 +308,32 @@ If you see permission errors:
 If you see resource provider errors:
 - Re-run the setup script in Cloud Shell (it will register missing providers)
 - Or manually register in Cloud Shell: `az provider register --namespace Microsoft.VirtualMachineImages`
+
+### Gallery Shows But Returns 404 Error in Portal
+
+If the gallery appears in the dropdown but shows a 404 error when selected:
+
+1. **Verify gallery exists** in Cloud Shell:
+   ```powershell
+   az sig show --resource-group rg-avd-cit-infrastructure --gallery-name gal_avd_images
+   ```
+   If this returns details, the gallery exists but portal may be caching.
+
+2. **Try these solutions:**
+   - **Wait 2-5 minutes** - Portal sometimes takes time to fully index new resources
+   - **Refresh the portal page** (F5 or Ctrl+R)
+   - **Clear browser cache** and reload
+   - **Navigate directly** to the gallery: In Azure Portal, search for "Shared Image Gallery" → Open `gal_avd_images`
+   - **Use Cloud Shell** to verify and list gallery:
+     ```powershell
+     az sig list --resource-group rg-avd-cit-infrastructure
+     ```
+
+3. **If gallery doesn't exist**, re-run the setup script - it will skip existing resources and create what's missing.
+
+4. **Alternative**: In the CIT wizard, you can manually enter the gallery details instead of selecting from dropdown:
+   - Gallery name: `gal_avd_images`
+   - Resource group: `rg-avd-cit-infrastructure`
 
 ## Reference Scripts
 
