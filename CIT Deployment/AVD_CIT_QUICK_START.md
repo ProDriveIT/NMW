@@ -59,7 +59,7 @@ The script automatically:
 - Registers required resource providers (Microsoft.VirtualMachineImages, etc.)
 - Creates resource group: `rg-avd-cit-infrastructure`
 - Creates managed identity: `umi-avd-cit`
-- Creates image gallery: `gal-avd-images`
+- Creates image gallery: `gal_avd_images`
 - Creates storage account (optional, for scripts)
 - Creates custom RBAC role with required permissions
 - Assigns all necessary role assignments
@@ -68,27 +68,21 @@ The script takes approximately 15-20 minutes to complete, as resource provider r
 
 ### 1.4 Save This Information (Required for Portal)
 
-**⚠️ CRITICAL: Copy and save these values from the script output before proceeding to the portal:**
+**Note these values from the script output (you may need them in Step 2):**
 
-1. **Managed Identity Resource ID** - This is a long path that looks like:
-   ```
-   /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rg-avd-cit-infrastructure/providers/Microsoft.ManagedIdentity/userAssignedIdentities/umi-avd-cit
-   ```
-   **Copy this entire line** - you'll paste it into the portal wizard.
+1. **Managed Identity Name**: `umi-avd-cit` - You'll select this from a dropdown in the portal wizard
 
-2. **Gallery Name**: `gal-avd-images`
+2. **Gallery Name**: `gal_avd_images`
 
 3. **Resource Group Name**: `rg-avd-cit-infrastructure`
 
 4. **Location** (region): The region where resources were created (e.g., `eastus`)
 
-**Keep this information handy** - you'll need it in Step 2.
-
 ---
 
 ## Step 2: Create Custom Image Template in Azure Portal
 
-> **Note**: Only proceed to this step after successfully completing Step 1 and saving the Managed Identity Resource ID.
+> **Note**: Only proceed to this step after successfully completing Step 1.
 
 ### 2.1 Navigate to Custom Image Templates
 
@@ -119,10 +113,10 @@ Complete the following fields in order:
 | **Resource group** | Select `rg-avd-cit-infrastructure` from the dropdown (created in Step 1) |
 | **Location** | Select the same region you used in Step 1 (e.g., `East US`) |
 | **Managed identity** | **CRITICAL**: Select the dropdown and choose **User-assigned managed identity** |
-| | Then click in the **Managed identity** field below and **paste the Resource ID** you saved from Step 1.3 |
-| | The field should show: `umi-avd-cit / rg-avd-cit-infrastructure` after pasting |
+| | Then click in the **Managed identity** field below - it will show a list of available managed identities |
+| | Select **`umi-avd-cit`** from the list (you should see: `umi-avd-cit / rg-avd-cit-infrastructure`) |
 
-**Verify** the Managed identity field shows your managed identity before proceeding.
+**Verify** the Managed identity field shows `umi-avd-cit` before proceeding.
 
 Click **Next** at the bottom right.
 
@@ -152,7 +146,7 @@ Click **Next**.
 
 1. Check **Azure Compute Gallery**
 2. Complete the following:
-   - **Gallery name**: `gal-avd-images` (from Step 1)
+   - **Gallery name**: `gal_avd_images` (from Step 1)
    - **Gallery image definition**: 
      - If no definition exists, click **Create new**
      - Enter a name (e.g., "avd-session-host")

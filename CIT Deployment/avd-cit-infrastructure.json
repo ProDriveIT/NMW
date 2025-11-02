@@ -31,7 +31,7 @@
     },
     "galleryName": {
       "type": "string",
-      "defaultValue": "gal-avd-images",
+      "defaultValue": "gal_avd_images",
       "metadata": {
         "description": "Name of the Azure Compute Gallery"
       }

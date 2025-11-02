@@ -46,7 +46,7 @@ $ErrorActionPreference = 'Stop'
 # Fixed resource names (no client-specific terms)
 $ResourceGroupName = "rg-avd-cit-infrastructure"
 $ManagedIdentityName = "umi-avd-cit"
-$GalleryName = "gal-avd-images"
+$GalleryName = "gal_avd_images"
 $CustomRoleName = "AVD Custom Image Builder Role"
 $StorageContainerName = "scripts"
 $Location = "eastus"
