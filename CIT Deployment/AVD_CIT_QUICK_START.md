@@ -64,7 +64,7 @@ The script automatically:
 - Creates custom RBAC role with required permissions
 - Assigns all necessary role assignments
 
-The script takes approximately 2-5 minutes to complete.
+The script takes approximately 15-20 minutes to complete, as resource provider registration can take several minutes.
 
 ### 1.4 Save This Information (Required for Portal)
 
