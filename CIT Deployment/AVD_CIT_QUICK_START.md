@@ -315,6 +315,13 @@ Once the build completes successfully:
    ```
 
 3. **Common issues:**
+   - **Chocolatey package not found**: 
+     - Error: `The package was not found with the source(s) listed`
+     - Solution: Verify package name is correct, or make Chocolatey install commands non-fatal by adding `-ErrorAction SilentlyContinue` and checking exit codes
+     - Example fix: `choco install package-name -y --ignore-errors` or wrap in try/catch
+   - **Script exits with non-zero exit code**: 
+     - Error: `Script exited with non-zero exit status: 1. Allowed exit codes are: [0]`
+     - Solution: Ensure all scripts handle errors gracefully and exit with code 0 on completion. Use `$LASTEXITCODE = 0` at the end of scripts if needed
    - **Timeout**: Increase build timeout in Build Properties
    - **Script download failed**: Verify script URLs are publicly accessible (GitHub raw URLs)
    - **Script execution errors**: Check customization.log for PowerShell errors
