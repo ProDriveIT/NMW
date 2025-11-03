@@ -197,7 +197,11 @@ Click **+ Add built-in script** and select from available options:
 - Install language packs
 - Set default OS language
 - Enable Windows optimizations for AVD
-- Install and enable FSLogix
+- **Install and enable FSLogix** - Requires Profile Path in UNC format:
+  - If your Azure Files URL is: `https://[storageaccount].file.core.windows.net/[sharename]`
+  - Convert to UNC format: `\\[storageaccount].file.core.windows.net\[sharename]`
+  - Example: `https://caavdstorage.file.core.windows.net/avd-profiles` → `\\caavdstorage.file.core.windows.net\avd-profiles`
+  - Enter the UNC path (not HTTPS URL) in the "Profile path" field
 - Configure Microsoft Teams optimizations
 - Configure Microsoft Office packages
 - Enable screen capture protection
@@ -308,6 +312,43 @@ If you see permission errors:
 If you see resource provider errors:
 - Re-run the setup script in Cloud Shell (it will register missing providers)
 - Or manually register in Cloud Shell: `az provider register --namespace Microsoft.VirtualMachineImages`
+
+### Failed to Start Image Template Build - "OperationNotAllowed" Error
+
+If you see: `"Operation Microsoft.VirtualMachineImages/imageTemplates/run is not allowed in provisioning state: failed or run state"`
+
+This means the image template is stuck in a **failed** or **running** state. To fix:
+
+**Option 1: Delete and Recreate the Template (Recommended)**
+1. In Azure Portal, navigate to your Custom Image Template resource
+2. Delete the template (it won't delete the image, just the template)
+3. Create a new template using the wizard
+
+**Option 2: Check Current Build Status**
+1. In the template resource, go to the **"Run output"** tab
+2. Check if a build is currently running (wait for it to complete/fail)
+3. If it failed, review error logs to understand why
+4. Delete the template and recreate with fixes
+
+**Option 3: Check via Azure CLI**
+```powershell
+# Check template status
+az image builder template show `
+    --resource-group [your-rg] `
+    --name [your-template-name] `
+    --query "lastRunStatus" -o json
+
+# If stuck, delete and recreate
+az image builder template delete `
+    --resource-group [your-rg] `
+    --name [your-template-name]
+```
+
+**Common Causes:**
+- Script errors in customization scripts
+- Network connectivity issues during build
+- Permissions errors (managed identity)
+- Source image issues
 
 ### Gallery Shows But Returns 404 Error in Portal
 
