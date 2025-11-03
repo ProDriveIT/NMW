@@ -288,24 +288,55 @@ Once the build completes successfully:
 
 ### Build Fails
 
-1. **Check build logs:**
-   - Select your template
-   - Review **Build run state** for error details
-   - Check the temporary resource group: `IT_<ResourceGroupName>_<TemplateName>_<GUID>`
-   - Look for `packerlogs` container in storage account
+1. **Check build logs via Azure Portal:**
+   - Navigate to the temporary resource group: `IT_rg-avd-cit-infrastructure_[TemplateName]_[GUID]`
+   - Find the Storage Account (name will be a random string)
+   - Open the Storage Account → **Containers** → `packerlogs` container
+   - Navigate through folders to find `customization.log`
+   - Download and review the log file for error details
 
-2. **Common issues:**
+2. **Check build logs via Azure CLI (Cloud Shell):**
+   ```powershell
+   # Set variables from your error message
+   $storageAccountName = "fo2qchfajl1umfu60tml38az"  # From your error
+   $resourceGroup = "IT_rg-avd-cit-infrastructure_AVD-GoldenImag_2e359f4d-d19e-43fe-be68-330d742a3c92"
+   $logPath = "6cf3634f-6ad9-48eb-8a84-7e60600a5d5c/customization.log"
+   
+   # Download the log file
+   az storage blob download `
+       --account-name $storageAccountName `
+       --container-name "packerlogs" `
+       --name "$logPath" `
+       --file "customization.log" `
+       --auth-mode login
+   
+   # View the log
+   Get-Content customization.log | Select-Object -Last 100
+   ```
+
+3. **Common issues:**
    - **Timeout**: Increase build timeout in Build Properties
-   - **Script download failed**: Verify script URLs are publicly accessible
-   - **Permission errors**: Verify managed identity has correct roles
-   - **Generation mismatch**: Ensure VM size matches source image generation
+   - **Script download failed**: Verify script URLs are publicly accessible (GitHub raw URLs)
+   - **Script execution errors**: Check customization.log for PowerShell errors
+   - **Permission errors**: Verify managed identity has Contributor role on resource group, gallery, and image definition
+   - **Generation mismatch**: Ensure VM size matches source image generation (Gen1 vs Gen2)
+   - **Network connectivity**: Build VM needs internet access to download scripts
 
 ### Permission Errors
 
 If you see permission errors:
-- Verify managed identity has "AVD Custom Image Builder Role" assigned
-- Check role assignments in Access control (IAM) on resource group
-- Ensure you have Owner role on subscription
+- Verify managed identity has "Contributor" role assigned on:
+  - Resource group (`rg-avd-cit-infrastructure`)
+  - Azure Compute Gallery (`gal_avd_images`)
+  - Image definition (`avd_session_host`)
+- Check role assignments in Access control (IAM) on these resources
+- The managed identity should have Contributor role at minimum - this includes all required Image Builder permissions:
+  - `Microsoft.Compute/galleries/read`
+  - `Microsoft.Compute/galleries/images/read`
+  - `Microsoft.Compute/galleries/images/versions/read`
+  - `Microsoft.Compute/galleries/images/versions/write`
+  - `Microsoft.Compute/images/write`, `read`, `delete`
+- Ensure you have Owner role on subscription (for running the setup script)
 
 ### Resource Provider Not Registered
 
