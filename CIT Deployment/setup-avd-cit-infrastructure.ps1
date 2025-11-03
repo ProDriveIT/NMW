@@ -47,8 +47,8 @@ $ErrorActionPreference = 'Stop'
 $ResourceGroupName = "rg-avd-cit-infrastructure"
 $ManagedIdentityName = "umi-avd-cit"
 $GalleryName = "gal_avd_images"
-$CustomRoleName = "AVD Custom Image Builder Role"
 $StorageContainerName = "scripts"
+$RoleToUse = "Contributor"  # Using built-in Contributor role - simpler and always available
 $Location = "uksouth"
 $GalleryImageDefinitionName = "avd_session_host"
 $GalleryImageDefinitionPublisher = "ProDriveIT"
@@ -66,16 +66,13 @@ $RequiredProviders = @(
     "Microsoft.ContainerInstance"
 )
 
-# Custom role permissions for AVD Image Builder
-$CustomRolePermissions = @(
-    "Microsoft.Compute/galleries/read",
-    "Microsoft.Compute/galleries/images/read",
-    "Microsoft.Compute/galleries/images/versions/read",
-    "Microsoft.Compute/galleries/images/versions/write",
-    "Microsoft.Compute/images/write",
-    "Microsoft.Compute/images/read",
-    "Microsoft.Compute/images/delete"
-)
+# Note: Using built-in "Contributor" role which includes all required permissions:
+# - Microsoft.Compute/galleries/read
+# - Microsoft.Compute/galleries/images/read
+# - Microsoft.Compute/galleries/images/versions/read
+# - Microsoft.Compute/galleries/images/versions/write
+# - Microsoft.Compute/images/write, read, delete
+# This is simpler than creating a custom role and avoids permission issues
 
 function Write-Step {
     param([string]$Message)
@@ -320,50 +317,7 @@ catch {
     exit 1
 }
 
-Write-Step "[Step 3] Creating custom RBAC role..."
-
-try {
-    $existingRole = az role definition list --name $CustomRoleName --output json | ConvertFrom-Json
-    
-    if ($existingRole.Count -gt 0) {
-        Write-Success "Custom role already exists"
-    }
-    else {
-        # Create role definition JSON (Azure CLI format)
-        $roleGuid = New-Guid
-        $roleDefinition = @{
-            Name = $roleGuid
-            roleName = $CustomRoleName
-            Description = "Custom role for Azure Virtual Desktop Custom Image Builder"
-            IsCustom = $true
-            Permissions = @(
-                @{
-                    Actions = $CustomRolePermissions
-                    NotActions = @()
-                }
-            )
-            AssignableScopes = @("/subscriptions/$SubscriptionId")
-        }
-        
-        $roleJsonPath = [System.IO.Path]::GetTempFileName()
-        $roleDefinition | ConvertTo-Json -Depth 10 | Set-Content $roleJsonPath
-        
-        try {
-            az role definition create --role-definition $roleJsonPath --output none 2>&1 | Out-Null
-            Write-Success "Custom role created"
-        }
-        finally {
-            Remove-Item $roleJsonPath -Force -ErrorAction SilentlyContinue
-        }
-    }
-}
-catch {
-    Write-Error-Message "Failed to create custom role: $_"
-    Write-Host "`nThis requires Owner role on the subscription." -ForegroundColor Yellow
-    exit 1
-}
-
-Write-Step "[Step 4] Creating managed identity..."
+Write-Step "[Step 3] Creating managed identity..."
 
 try {
     $identity = az identity show `
@@ -396,7 +350,7 @@ catch {
     exit 1
 }
 
-Write-Step "[Step 5] Assigning custom RBAC role to managed identity..."
+Write-Step "[Step 4] Assigning Contributor role to managed identity..."
 
 try {
     $rgScope = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName"
@@ -405,7 +359,7 @@ try {
     $existingAssignment = az role assignment list `
         --assignee $identityPrincipalId `
         --scope $rgScope `
-        --role $CustomRoleName `
+        --role $RoleToUse `
         --output json 2>$null | ConvertFrom-Json
     
     if ($existingAssignment.Count -gt 0) {
@@ -414,11 +368,11 @@ try {
     else {
         az role assignment create `
             --assignee $identityPrincipalId `
-            --role $CustomRoleName `
+            --role $RoleToUse `
             --scope $rgScope `
             --output none 2>&1 | Out-Null
         
-        Write-Success "Custom role assigned on resource group"
+        Write-Success "Contributor role assigned on resource group"
     }
 }
 catch {
@@ -426,7 +380,7 @@ catch {
     exit 1
 }
 
-Write-Step "[Step 6] Creating Azure Compute Gallery..."
+Write-Step "[Step 5] Creating Azure Compute Gallery..."
 
 try {
     $gallery = az sig show `
@@ -485,13 +439,13 @@ try {
         }
     }
     
-    # Assign custom role on gallery
+    # Assign Contributor role on gallery
     try {
         $galleryScope = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Compute/galleries/$GalleryName"
         $galleryAssignment = az role assignment list `
             --assignee $identityPrincipalId `
             --scope $galleryScope `
-            --role $CustomRoleName `
+            --role $RoleToUse `
             --output json 2>$null | ConvertFrom-Json
         
         if ($galleryAssignment.Count -gt 0) {
@@ -500,11 +454,11 @@ try {
         else {
             az role assignment create `
                 --assignee $identityPrincipalId `
-                --role $CustomRoleName `
+                --role $RoleToUse `
                 --scope $galleryScope `
                 --output none 2>&1 | Out-Null
             
-            Write-Success "Custom role assigned on gallery"
+            Write-Success "Contributor role assigned on gallery"
         }
     }
     catch {
@@ -542,6 +496,34 @@ try {
             Write-Host "    SKU: $GalleryImageDefinitionSku" -ForegroundColor Gray
             Write-Host "    Generation: V2 (Gen2)" -ForegroundColor Gray
         }
+        
+        # Assign Contributor role on image definition (required for Image Builder access)
+        try {
+            $imageDefinitionScope = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Compute/galleries/$GalleryName/images/$GalleryImageDefinitionName"
+            
+            $imageDefAssignment = az role assignment list `
+                --assignee $identityPrincipalId `
+                --scope $imageDefinitionScope `
+                --role $RoleToUse `
+                --output json 2>$null | ConvertFrom-Json
+            
+            if ($imageDefAssignment.Count -gt 0) {
+                Write-Success "Role assignment already exists on image definition"
+            }
+            else {
+                az role assignment create `
+                    --assignee $identityPrincipalId `
+                    --role $RoleToUse `
+                    --scope $imageDefinitionScope `
+                    --output none 2>&1 | Out-Null
+                
+                Write-Success "Contributor role assigned on image definition"
+            }
+        }
+        catch {
+            Write-Warning-Message "Failed to assign role on image definition: $_"
+            Write-Host "    Manual fix: Assign 'Contributor' role to identity on the image definition" -ForegroundColor Yellow
+        }
     }
     catch {
         Write-Warning-Message "Failed to create gallery image definition (non-critical): $_"
@@ -553,7 +535,7 @@ catch {
     exit 1
 }
 
-Write-Step "[Step 7] Creating storage account..."
+Write-Step "[Step 6] Creating storage account..."
 
 # Initialize storage account name variable
 $storageAccountName = $null
