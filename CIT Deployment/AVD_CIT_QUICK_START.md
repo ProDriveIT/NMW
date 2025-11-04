@@ -13,12 +13,6 @@ Before you begin, ensure you have:
 
 ---
 
-## ⚠️ IMPORTANT: Run Script First
-
-**You MUST complete Step 1 (run the setup script) BEFORE going to the Azure Portal.** The portal wizard requires infrastructure that the script creates.
-
----
-
 ## Step 1: Run Infrastructure Setup (Required First Step)
 
 ### 1.1 Open Azure Cloud Shell
