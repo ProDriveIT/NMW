@@ -289,39 +289,70 @@ If you need to install applications that cannot be deployed via script, you can 
 
 > **Note**: The captured image will be stored in the same gallery as your automated builds, maintaining consistency across your image versions.
 
-### 4.2 Update Image Template with New Scripts or Actions
+### 4.2 Create a New Template with Updated Scripts or Actions
 
-If you need to add new scripts or modify existing ones in your image template:
+**Important**: Custom image templates are immutable and cannot be edited once created. To add new scripts or modify existing ones, you must create a new template. However, you can use an existing image from your gallery as the source image to build upon.
 
 1. **Navigate to Custom Image Templates**:
    - Go to **Azure Virtual Desktop** > **Custom image templates**
-   - Select your template (e.g., `AVD-GoldenImage-v1`)
+   - Click **+ Create** (or **+ Add custom image template**)
 
-2. **Update the template**:
-   - Click **Edit** (or navigate to the template resource)
-   - Go to the **Customizations** tab
+2. **Basics Tab**:
+   - **Template name**: Enter a new name (e.g., `AVD-GoldenImage-v2`)
+   - **Import from existing template**: Leave as **No**
+   - **Subscription**: Select your subscription
+   - **Resource group**: Select `rg-avd-cit-infrastructure`
+   - **Location**: Select the same region as before
+   - **Managed identity**: Select **User-assigned managed identity**, then select **`umi-avd-cit`**
+   - Click **Next**
 
-3. **Add new scripts**:
-   - Click **+ Add built-in script** or **+ Add your own script**
-   - Configure the script as needed
+3. **Source Image Tab**:
+   - Select **Azure Compute Gallery** (to use your existing image)
+   - **Gallery**: Select `gal_avd_images`
+   - **Gallery image definition**: Select `avd_session_host`
+   - **Gallery image version**: Select the version you want to build upon (e.g., `0.0.1`)
+   - **Note**: This uses your existing custom image as the starting point
+   - Click **Next**
+
+4. **Distribution Targets Tab**:
+   - Check **Azure Compute Gallery** (leave "Managed image" unchecked)
+   - **Gallery name**: Select `gal_avd_images`
+   - **Gallery image definition**: Select `avd_session_host`
+   - **Gallery image version**: Enter a new version (e.g., `0.0.2`)
+   - **Run output**: Enter a new name (e.g., `AVDImageBuild2`)
+   - **Replicated regions**: Select regions as needed
+   - **Excluded from latest**: **No**
+   - **Storage account type**: `Standard_LRS`
+   - Click **Next**
+
+5. **Build Properties Tab**:
+   - Configure as needed (same as Step 2.5)
+   - **Build timeout (minutes)**: `200`
+   - **Build VM size**: `Standard_D2s_v4`
+   - Click **Next**
+
+6. **Customizations Tab**:
+   - Add your updated scripts (built-in or custom)
+   - **Add new scripts** or **modify the script list** as needed
    - Use **Move up** or **Move down** to adjust execution order
-   - Click **Save** for each script
+   - Click **Next**
 
-4. **Modify existing scripts**:
-   - Click on an existing script to edit it
-   - Update parameters or URI as needed
-   - Click **Save**
+7. **Tags Tab (Optional)**:
+   - Add any tags as needed
+   - Click **Next**
 
-5. **Save the template**:
-   - Click **Review + create** or **Save**
-   - The template updates immediately (no build is triggered automatically)
+8. **Review and Create**:
+   - Review all settings
+   - Click **Create**
 
-6. **Start a new build**:
-   - After updating the template, go to Step 3 to start a new build
-   - The new build will use the updated template with your changes
-   - The new image version will be created in the same gallery
+9. **Start the build**:
+   - After the template is created, follow Step 3 to start a new build
+   - The new build will use your updated scripts and create a new image version in the same gallery
 
-> **Note**: Each build creates a new image version in your gallery. You can maintain multiple versions and choose which one to use when creating host pools.
+> **Note**: 
+> - Templates are immutable - you cannot edit them once created
+> - Creating a new template allows you to add/modify scripts while building on your existing image
+> - Each build creates a new image version in your gallery, maintaining version history
 
 ## Step 5: Use Your Custom Image
 
