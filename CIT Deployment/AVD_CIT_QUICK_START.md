@@ -247,7 +247,83 @@ The template will be created in about 20 seconds. Click **Refresh** if needed.
 - Image is captured and stored
 - Temporary resources are cleaned up
 
-## Step 4: Use Your Custom Image
+## Step 4: Manual Image Creation and Template Updates (Optional)
+
+### 4.1 Create a Standalone VM for Manual Customization (If Required)
+
+If you need to install applications that cannot be deployed via script, you can create a standalone VM from your custom image and manually install applications:
+
+1. **Navigate to Azure Compute Gallery**:
+   - In Azure Portal, search for **Azure Compute Gallery**
+   - Open `gal_avd_images` (created in Step 1)
+
+2. **Create a VM from the latest image version**:
+   - Go to **Image definitions** → `avd_session_host`
+   - Select the latest image version (e.g., `0.0.1`)
+   - Click **Create VM**
+   - Configure the VM:
+     - **Name**: e.g., `vm-goldenimage-manual`
+     - **Resource group**: `rg-avd-cit-infrastructure` (or your preferred resource group)
+     - **VM size**: `Standard_D2s_v4` (matches Gen2 source image)
+     - **Authentication**: Configure as needed
+   - Click **Review + create**, then **Create**
+
+3. **Connect to the VM and install applications**:
+   - Connect via RDP or Azure Bastion
+   - Install any required applications manually
+   - Configure settings as needed
+   - **Important**: Do not run sysprep manually - the capture process will handle this
+
+4. **Capture the image back to the gallery**:
+   - In Azure Portal, navigate to your VM
+   - Click **Capture** (or use Azure CLI)
+   - Configure capture settings:
+     - **Destination**: **Azure Compute Gallery**
+     - **Gallery**: Select `gal_avd_images`
+     - **Image definition**: Select `avd_session_host`
+     - **Image version**: Enter a new version (e.g., `0.0.2`)
+     - **Replication**: Select regions as needed
+     - **Storage account type**: `Standard_LRS`
+     - **Exclude from latest**: **No** (unless you want this as a test version)
+   - Click **Create**
+
+> **Note**: The captured image will be stored in the same gallery as your automated builds, maintaining consistency across your image versions.
+
+### 4.2 Update Image Template with New Scripts or Actions
+
+If you need to add new scripts or modify existing ones in your image template:
+
+1. **Navigate to Custom Image Templates**:
+   - Go to **Azure Virtual Desktop** > **Custom image templates**
+   - Select your template (e.g., `AVD-GoldenImage-v1`)
+
+2. **Update the template**:
+   - Click **Edit** (or navigate to the template resource)
+   - Go to the **Customizations** tab
+
+3. **Add new scripts**:
+   - Click **+ Add built-in script** or **+ Add your own script**
+   - Configure the script as needed
+   - Use **Move up** or **Move down** to adjust execution order
+   - Click **Save** for each script
+
+4. **Modify existing scripts**:
+   - Click on an existing script to edit it
+   - Update parameters or URI as needed
+   - Click **Save**
+
+5. **Save the template**:
+   - Click **Review + create** or **Save**
+   - The template updates immediately (no build is triggered automatically)
+
+6. **Start a new build**:
+   - After updating the template, go to Step 3 to start a new build
+   - The new build will use the updated template with your changes
+   - The new image version will be created in the same gallery
+
+> **Note**: Each build creates a new image version in your gallery. You can maintain multiple versions and choose which one to use when creating host pools.
+
+## Step 5: Use Your Custom Image
 
 Once the build completes successfully:
 
