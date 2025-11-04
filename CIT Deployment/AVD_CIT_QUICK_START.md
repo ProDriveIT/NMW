@@ -217,6 +217,16 @@ Click **+ Add your own script** and add the following scripts in order:
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/optimize-microsoft-edge.ps1`
    - Click **Save**
 
+4. **Install Google Chrome Per Machine**
+   - **Name**: `Install Google Chrome Per Machine`
+   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-chrome-per-machine.ps1`
+   - Click **Save**
+
+5. **Install Adobe Reader Per Machine**
+   - **Name**: `Install Adobe Reader Per Machine`
+   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-adobe-reader-per-machine.ps1`
+   - Click **Save**
+
 **Note**: Scripts will execute in the order listed. Use **Move up** or **Move down** to reorder if needed.
 
 Click **Next**.
@@ -500,17 +510,16 @@ If the gallery appears in the dropdown but shows a 404 error when selected:
 
 Scripts are available in this repository:
 - **Repository**: [https://github.com/ProDriveIT/NMW](https://github.com/ProDriveIT/NMW)
-- **Location**: `scripted-actions/custom-image-template-scripts/`
-- **GitHub URLs**: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/[script-name].ps1`
+- **Location**: `scripted-actions/windows-scripts/`
+- **GitHub URLs**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/[script-name].ps1`
 
 **Available Scripts:**
-- `enable-windows-optimizations.ps1` - Comprehensive AVD optimizations
-- `install-enable-fslogix.ps1` - FSLogix installation and configuration
-- `configure-teams-optimizations.ps1` - Teams VDI optimizations
-- `configure-office.ps1` - Office installation/configuration
-- `configure-rdp-shortpath.ps1` - RDP Shortpath setup
-- `enable-timezone-redirection.ps1` - Time zone redirection
-- And more...
+- `install-m365-apps.ps1` - Installs/updates Microsoft 365 Apps for Business (system-wide)
+- `install-onedrive-per-machine.ps1` - Installs OneDrive for all users (system-wide)
+- `optimize-microsoft-edge.ps1` - Configures Edge policies for optimized AVD performance
+- `install-chrome-per-machine.ps1` - Installs Google Chrome for all users (system-wide, sysprep-compatible)
+- `install-adobe-reader-per-machine.ps1` - Installs Adobe Acrobat Reader DC for all users (system-wide, sysprep-compatible)
+- And more scripts in `scripted-actions/custom-image-template-scripts/` directory
 
 ## Next Steps
 
