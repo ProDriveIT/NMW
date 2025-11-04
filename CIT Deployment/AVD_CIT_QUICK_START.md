@@ -82,83 +82,46 @@ The script takes approximately 15-20 minutes to complete, as resource provider r
 
 ### 2.1 Navigate to Custom Image Templates
 
-> **Note**: If you have Cloud Shell open, you can keep it open in the background. The portal navigation works independently.
-
-1. **In Azure Portal** (same portal window where Cloud Shell is running):
-   - **Search for Azure Virtual Desktop**:
-     - Click the **search bar** at the top of the portal (or press `/`)
-     - Type: `Azure Virtual Desktop`
-     - Click on **Azure Virtual Desktop** in the results
-2. **Navigate to Custom Image Templates**:
-   - In the left-hand menu, scroll down and click **Custom image templates**
-   - You should see the Custom image templates page
-3. **Start Creation**:
-   - Click the **+ Create** button (or **+ Add custom image template**)
+1. In Azure Portal, navigate to: **Azure Virtual Desktop** > **Custom image templates**
+2. Click **+ Create** (or **+ Add custom image template**)
 
 You should now see the "Create a custom image template" wizard with multiple tabs at the top.
 
 ### 2.2 Basics Tab
 
-Complete the following fields in order:
+Complete the following fields:
 
 | Field | What to Enter |
 |-------|---------------|
-| **Template name** | Enter a descriptive name (e.g., `AVD-GoldenImage-v1` or `Windows11-AVD-SessionHost`) |
+| **Template name** | `AVD-GoldenImage-v1` |
 | **Import from existing template** | Leave as **No** |
 | **Subscription** | Select your subscription from the dropdown |
 | **Resource group** | Select `rg-avd-cit-infrastructure` from the dropdown (created in Step 1) |
 | **Location** | Select the same region you used in Step 1 (e.g., `UK South`) |
-| **Managed identity** | **CRITICAL**: Select the dropdown and choose **User-assigned managed identity** |
-| | Then click in the **Managed identity** field below - it will show a list of available managed identities |
-| | Select **`umi-avd-cit`** from the list (you should see: `umi-avd-cit / rg-avd-cit-infrastructure`) |
-
-**Verify** the Managed identity field shows `umi-avd-cit` before proceeding.
+| **Managed identity** | Select **User-assigned managed identity**, then select **`umi-avd-cit`** |
 
 Click **Next** at the bottom right.
 
 
 ### 2.3 Source Image Tab
 
-Choose your source image:
-
-**Option A: Platform Image (Marketplace)**
-- Select **Platform image (marketplace)**
-- Choose an image from the list (e.g., Windows 11 Enterprise with Microsoft 365 Apps)
-- Note the **Generation** shown (Gen1 or Gen2) - you'll need this later
-
-**Option B: Managed Image**
-- Select **Managed image**
-- Choose an existing managed image from your subscription
-
-**Option C: Azure Compute Gallery**
-- Select **Azure Compute Gallery**
-- Choose a gallery, image definition, and version
+1. Select **Platform image (marketplace)**
+2. Choose the **latest Windows 11 version (without apps)** from the list
+3. **Note**: The source image will always be **Gen2**. There is no option at this stage to enter publisher/offer/SKU, nor can you pick the generation.
 
 Click **Next**.
 
 ### 2.4 Distribution Targets Tab
 
-**Use Azure Compute Gallery (Required):**
-
-The infrastructure created in Step 1 includes an Azure Compute Gallery. You must use this gallery for distribution.
-
 1. Check **Azure Compute Gallery** (leave "Managed image" unchecked)
 2. Complete the following:
    - **Gallery name**: Select `gal_avd_images` from the dropdown (created in Step 1)
-   - **Gallery image definition**: 
-     - Select `avd_session_host` from the dropdown (already created in Step 1)
-     - OR click **Create new** if you want different settings:
-       - Enter a name (e.g., `avd-session-host`)
-       - Select **Publisher**: Your organization name
-       - Select **Offer**: e.g., `avd-images`
-       - Select **SKU**: e.g., `windows11-avd`
-       - **Generation**: **CRITICAL** - Must match your source image generation (Gen1 or Gen2). The default definition created is Gen2 - if your source is Gen1, create a new definition with Gen1.
-   - **Gallery image version**: Leave blank (auto-generated) or enter a version like `1.0.0`
+   - **Gallery image definition**: Select `avd_session_host` from the dropdown (already created in Step 1)
+   - **Gallery image version**: `0.0.1`
+   - **Run output**: `AVDImageBuild1`
    - **Replicated regions**: Select regions where you want the image stored (e.g., `UK South`). At minimum, select the same region as your infrastructure.
-   - **Excluded from latest**: Leave as **No** (unless you want to exclude this version from "latest" references)
-   - **Storage account type**: `Standard_LRS` (recommended) or `Premium_LRS` if you need faster performance
-
-> **Note**: Managed images are not recommended for AVD deployments. Azure Compute Gallery provides versioning, replication, and better management capabilities.
+   - **Excluded from latest**: **No**
+   - **Storage account type**: `Standard_LRS`
 
 Click **Next**.
 
@@ -166,77 +129,95 @@ Click **Next**.
 
 Configure build settings:
 
-| Field | Recommendation |
-|-------|----------------|
-| Build timeout (minutes) | 120-180 (for Windows Updates, language packs, etc.) |
-| Build VM size | Standard_D2s_v3 (for Gen1) or Standard_D2s_v4 (for Gen2) |
-| OS disk size (GB) | 127 (default) or larger if needed |
-| Staging group | Leave blank (auto-created) |
-| Build VM managed identity | Leave blank (optional) |
-| Virtual network | Leave blank (temporary network created) |
-
-**Important**: Select a VM size that matches the **generation** of your source image:
-- **Gen1**: Standard_D2s_v3, Standard_D4s_v3, etc.
-- **Gen2**: Standard_D2s_v4, Standard_D4s_v4, etc.
+| Field | Value |
+|-------|-------|
+| **Build timeout (minutes)** | `200` |
+| **Build VM size** | `Standard_D2s_v4` |
+| **OS disk size (GB)** | 127 (default) or larger if needed |
+| **Staging group** | Leave blank (auto-created) |
+| **Build VM managed identity** | Leave blank (optional) |
+| **Virtual network** | Leave blank (temporary network created) |
 
 Click **Next**.
 
 ### 2.6 Customizations Tab
 
-Add scripts to customize your image:
+Add built-in scripts to customize your image. Click **+ Add built-in script** for each of the following:
 
-#### Option A: Built-in Scripts (Recommended)
+1. **Install language packs**
+   - Select **English (United Kingdom)**
 
-Click **+ Add built-in script** and select from available options:
-- Install language packs
-- Set default OS language
-- Enable Windows optimizations for AVD
-- **Install and enable FSLogix** - Requires Profile Path in UNC format:
-  - If your Azure Files URL is: `https://[storageaccount].file.core.windows.net/[sharename]`
-  - Convert to UNC format: `\\[storageaccount].file.core.windows.net\[sharename]`
-  - Example: `https://caavdstorage.file.core.windows.net/avd-profiles` → `\\caavdstorage.file.core.windows.net\avd-profiles`
-  - Enter the UNC path (not HTTPS URL) in the "Profile path" field
-- Configure Microsoft Teams optimizations
-- Configure Microsoft Office packages
-- Enable screen capture protection
-- Configure RDP Shortpath
-- And more...
+2. **Set default OS language**
+   - Select **English (United Kingdom)**
 
-Complete any required parameters and click **Save**.
+3. **Time zone redirection**
+   - Enable: **Yes**
 
-#### Option B: Your Own Scripts
+4. **Disable storage sense**
+   - Enable: **Yes**
 
-Click **+ Add your own script**:
+5. **Install and enable FSLogix**
+   - Enable: **Yes**
+   - **Profile path**: Enter your FSLogix profile path in UNC format
+     - If your Azure Files URL is: `https://[storageaccount].file.core.windows.net/[sharename]`
+     - Convert to UNC format: `\\[storageaccount].file.core.windows.net\[sharename]`
+     - Example: `https://caavdstorage.file.core.windows.net/avd-profiles` → `\\caavdstorage.file.core.windows.net\avd-profiles`
 
-1. Enter a **Name** for the script
-2. Enter the **URI**:
-   
-   **Recommended: GitHub Raw URL**
-   ```
-   https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/[script-name].ps1
-   ```
-   
-   **Example URLs from this repository:**
-   - Windows Optimizations: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/enable-windows-optimizations.ps1`
-   - FSLogix: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/install-enable-fslogix.ps1`
-   - Teams: `https://raw.githubusercontent.com/ProDriveIT/NMW/main/scripted-actions/custom-image-template-scripts/configure-teams-optimizations.ps1`
-   
-   **Alternative: Storage Account with SAS Token**
-   ```
-   https://[storage-account].blob.core.windows.net/scripts/[script-name].ps1?[SAS-token]
-   ```
+6. **Configure RDP shortpath**
+   - Enable: **Yes**
 
-3. Click **Save**
+7. **Install Teams with optimizations**
+   - Enable: **Yes**
 
-**Script Execution Order:**
-- Scripts run in the order listed
-- Use **Move up**, **Move down** to reorder
-- Recommended order:
-  1. Windows Optimizations
-  2. FSLogix Installation
-  3. Application Installations (Teams, Office)
-  4. Configuration Scripts (RDP, Screen Capture)
-  5. Admin Sysprep (last, if needed)
+8. **Configure session timeouts**
+   - Enable: **Yes**
+   - **Time limit for disconnected sessions**: `6 hours`
+   - **Time limit for active but idle sessions**: `2 hours`
+   - **Time limit for active sessions**: `12 hours`
+   - **Time limit to sign out sessions**: `15 minutes`
+
+9. **Install multimedia redirection**
+   - Enable: **Yes**
+   - **Architecture**: `x64`
+   - **Edge**: **Yes**
+   - **Chrome**: **Yes**
+
+10. **Configure Windows optimizations**
+    - Enable: **Yes**
+    - **Select all** optimization options
+
+11. **Disable auto update**
+    - Enable: **Yes**
+
+12. **Remove AppX packages**
+    - Enable: **Yes**
+    - **Important**: Keep commonly used apps like Snipping Tool, Voice Recorder, Calculator, etc. (err on the side of caution if unsure)
+
+13. **Apply Windows updates**
+    - Enable: **Yes**
+
+After adding each built-in script, complete any required parameters and click **Save**.
+
+#### Add Your Own Scripts
+
+Click **+ Add your own script** and add the following scripts in order:
+
+1. **Install Microsoft 365 Apps**
+   - **Name**: `Install Microsoft 365 Apps`
+   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-m365-apps.ps1`
+   - Click **Save**
+
+2. **Install OneDrive Per Machine**
+   - **Name**: `Install OneDrive Per Machine`
+   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-onedrive-per-machine.ps1`
+   - Click **Save**
+
+3. **Optimize Microsoft Edge**
+   - **Name**: `Optimize Microsoft Edge`
+   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/optimize-microsoft-edge.ps1`
+   - Click **Save**
+
+**Note**: Scripts will execute in the order listed. Use **Move up** or **Move down** to reorder if needed.
 
 Click **Next**.
 
