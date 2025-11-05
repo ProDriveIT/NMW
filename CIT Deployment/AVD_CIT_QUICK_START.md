@@ -609,17 +609,27 @@ If you want to update an existing host pool with your new custom image:
    - Go to **Azure Virtual Desktop** > **Host pools**
    - Select your existing host pool
 
-2. **Add New Session Hosts**:
-   - Click **Virtual machines** tab
+2. **Generate Registration Key** (Required):
+   - In the host pool overview, click **Registration key** in the left menu
+   - Click **Generate new key**
+   - Set an **Expiration date and time** (recommend at least 24 hours from now to allow time for deployment)
+   - Click **OK**
+   - **Copy the registration key** - You'll need this during VM deployment
+   - **Important**: Keep this key secure and note the expiration time. If the key expires before VMs are deployed, you'll need to generate a new one.
+
+3. **Add New Session Hosts**:
+   - Click **Virtual machines** tab (or **Session hosts** tab)
    - Click **+ Add**
    - Follow **Step 5.4** through **Step 5.7** to configure new VMs with your custom image
+   - **Note**: During the deployment process, the registration key will be used automatically to register the new VMs to the host pool
 
-3. **Replace Existing Session Hosts** (Optional):
+4. **Replace Existing Session Hosts** (Optional):
    - If you want to replace existing hosts:
+     - **Generate a registration key** (if you haven't already - see step 2 above)
      - Drain existing hosts (set to drain mode to prevent new sessions)
      - Wait for users to disconnect
      - Delete old VMs
-     - Add new VMs using your custom image (follow Step 5.4)
+     - Add new VMs using your custom image (follow steps 2-3 above, including registration key generation)
 
 > **Note**: When updating an existing host pool, consider:
 > - Adding new VMs first, then removing old ones (zero-downtime approach)
