@@ -32,16 +32,86 @@ function Test-WingetAvailable {
     }
 }
 
-# Check if winget is already available
+# Function to find winget executable location
+function Find-WingetPath {
+    # Common locations where winget might be installed
+    $wingetPaths = @(
+        "$env:LOCALAPPDATA\Microsoft\WindowsApps\winget.exe",
+        "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*\winget.exe",
+        "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*\AppInstallerCLI.exe"
+    )
+    
+    foreach ($path in $wingetPaths) {
+        # Handle wildcards
+        $resolvedPaths = Get-ChildItem -Path $path -ErrorAction SilentlyContinue
+        foreach ($resolvedPath in $resolvedPaths) {
+            if (Test-Path $resolvedPath.FullName) {
+                return $resolvedPath.FullName
+            }
+        }
+    }
+    
+    # Also check App Installer package location
+    $appInstaller = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller" -ErrorAction SilentlyContinue
+    if ($appInstaller) {
+        $installLocation = $appInstaller.InstallLocation
+        $wingetPath = Join-Path $installLocation "winget.exe"
+        if (Test-Path $wingetPath) {
+            return $wingetPath
+        }
+    }
+    
+    return $null
+}
+
+# Check if winget is already available in PATH
 Write-Host "Checking if Windows Package Manager (winget) is available..."
 if (Test-WingetAvailable) {
     $wingetVersion = winget --version
-    Write-Host "winget is already installed. Version: $wingetVersion"
+    Write-Host "winget is already installed and available. Version: $wingetVersion"
     Write-Host "No installation needed."
     exit 0
 }
 
-Write-Host "winget is not available. Installing Windows Package Manager..."
+# winget not in PATH - try to find it and add to PATH
+Write-Host "winget not found in PATH. Searching for winget installation..."
+$wingetPath = Find-WingetPath
+
+if ($wingetPath) {
+    Write-Host "Found winget at: $wingetPath"
+    Write-Host "Adding to PATH for current session..."
+    
+    # Add to PATH for current session
+    $wingetDir = Split-Path -Parent $wingetPath
+    $env:Path = "$wingetDir;$env:Path"
+    
+    # Verify it works now
+    if (Test-WingetAvailable) {
+        $wingetVersion = winget --version
+        Write-Host "winget is now available. Version: $wingetVersion"
+        Write-Host "Note: PATH change is only for this session. For permanent fix, ensure winget is in system PATH."
+        exit 0
+    }
+    else {
+        Write-Warning "Found winget but it's not working. Attempting to use direct path..."
+        # Try using full path
+        try {
+            $version = & $wingetPath --version 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "winget is available via direct path. Version: $version"
+                Write-Host "For this session, using: $wingetPath"
+                # Create an alias or function for winget
+                Set-Alias -Name winget -Value $wingetPath -Scope Global -ErrorAction SilentlyContinue
+                exit 0
+            }
+        }
+        catch {
+            Write-Warning "Direct path execution also failed: $_"
+        }
+    }
+}
+
+Write-Host "winget is not available and could not be located. Attempting installation..."
 
 # Method 1: Try to install via Microsoft Store (App Installer)
 Write-Host "Attempting to install via Microsoft Store (App Installer)..."
@@ -143,7 +213,12 @@ try {
     
     # Install MSIX bundle using Add-AppxPackage
     # Note: This requires the package to be signed and trusted
+    # IMPORTANT: Add-AppxPackage may not work when running as SYSTEM account
+    Write-Host "Attempting to install App Installer package..."
+    Write-Host "Note: If running as SYSTEM account, this may fail. On Windows 11, winget should already be installed."
+    
     try {
+        # Try Add-AppxPackage - this may fail under SYSTEM account
         Add-AppxPackage -Path $AppInstallerPath -ErrorAction Stop
         Write-Host "App Installer package installed successfully."
         
@@ -152,6 +227,13 @@ try {
         
         # Refresh environment to pick up new PATH entries
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+        
+        # Try to find winget again after installation attempt
+        $wingetPath = Find-WingetPath
+        if ($wingetPath) {
+            $wingetDir = Split-Path -Parent $wingetPath
+            $env:Path = "$wingetDir;$env:Path"
+        }
         
         # Check if winget is now available
         $maxRetries = 5
@@ -187,13 +269,31 @@ try {
         }
     }
     catch {
-        Write-Error "Failed to install App Installer package: $_"
-        Write-Error "You may need to manually install App Installer from the Microsoft Store."
+        Write-Warning "Add-AppxPackage failed (this is expected when running as SYSTEM account): $_"
+        Write-Host "On Windows 11, winget should already be installed. Attempting to locate it..."
         
-        # Clean up on failure
+        # Clean up installer
         if (Test-Path $AppInstallerPath) {
             Remove-Item -Path $AppInstallerPath -Force -ErrorAction SilentlyContinue
         }
+        
+        # Try one more time to find winget (it might have been installed but just not in PATH)
+        $wingetPath = Find-WingetPath
+        if ($wingetPath) {
+            Write-Host "Found winget after installation attempt at: $wingetPath"
+            $wingetDir = Split-Path -Parent $wingetPath
+            $env:Path = "$wingetDir;$env:Path"
+            
+            if (Test-WingetAvailable) {
+                $wingetVersion = winget --version
+                Write-Host "winget is available. Version: $wingetVersion"
+                exit 0
+            }
+        }
+        
+        Write-Error "Failed to install or locate winget. On Windows 11, winget should be pre-installed."
+        Write-Error "If this is a custom Windows image, you may need to ensure winget is included in the base image."
+        Write-Error "Microsoft Store link: https://www.microsoft.com/store/productId/9NBLGGH4NNS1"
         exit 1
     }
 }

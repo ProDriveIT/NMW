@@ -22,27 +22,85 @@ if (-not $isAdmin) {
     exit 1
 }
 
+# Function to find winget if not in PATH
+function Find-WingetPath {
+    $wingetPaths = @(
+        "$env:LOCALAPPDATA\Microsoft\WindowsApps\winget.exe",
+        "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*\winget.exe"
+    )
+    
+    foreach ($path in $wingetPaths) {
+        $resolvedPaths = Get-ChildItem -Path $path -ErrorAction SilentlyContinue
+        foreach ($resolvedPath in $resolvedPaths) {
+            if (Test-Path $resolvedPath.FullName) {
+                return $resolvedPath.FullName
+            }
+        }
+    }
+    
+    $appInstaller = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller" -ErrorAction SilentlyContinue
+    if ($appInstaller) {
+        $installLocation = $appInstaller.InstallLocation
+        $wingetPath = Join-Path $installLocation "winget.exe"
+        if (Test-Path $wingetPath) {
+            return $wingetPath
+        }
+    }
+    
+    return $null
+}
+
 # Check if winget is available
 Write-Host "Checking for Windows Package Manager (winget)..."
+$wingetCommand = "winget"
+
 try {
     $wingetVersion = winget --version 2>&1
     if ($LASTEXITCODE -ne 0) {
-        throw "winget not found"
+        throw "winget not found in PATH"
     }
     Write-Host "winget is available: $wingetVersion"
 }
 catch {
-    Write-Error "winget is not available. This script requires Windows Package Manager (winget)."
-    Write-Error ""
-    Write-Error "To install winget, you can:"
-    Write-Error "1. Run the install-winget.ps1 script first (recommended):"
-    Write-Error "   https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-winget.ps1"
-    Write-Error ""
-    Write-Error "2. Or manually install App Installer from the Microsoft Store:"
-    Write-Error "   https://www.microsoft.com/store/productId/9NBLGGH4NNS1"
-    Write-Error ""
-    Write-Error "Note: Add install-winget.ps1 as a script BEFORE this script in your Custom Image Template."
-    exit 1
+    Write-Host "winget not found in PATH. Searching for winget installation..."
+    $wingetPath = Find-WingetPath
+    
+    if ($wingetPath) {
+        Write-Host "Found winget at: $wingetPath"
+        Write-Host "Adding to PATH for current session..."
+        $wingetDir = Split-Path -Parent $wingetPath
+        $env:Path = "$wingetDir;$env:Path"
+        
+        # Try again
+        try {
+            $wingetVersion = winget --version 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "winget is now available: $wingetVersion"
+            }
+            else {
+                throw "winget still not working"
+            }
+        }
+        catch {
+            # Use direct path as fallback
+            Write-Host "Using winget via direct path: $wingetPath"
+            $wingetCommand = $wingetPath
+        }
+    }
+    else {
+        Write-Error "winget is not available. This script requires Windows Package Manager (winget)."
+        Write-Error ""
+        Write-Error "To install winget, you can:"
+        Write-Error "1. Run the install-winget.ps1 script first (recommended):"
+        Write-Error "   https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-winget.ps1"
+        Write-Error ""
+        Write-Error "2. Or manually install App Installer from the Microsoft Store:"
+        Write-Error "   https://www.microsoft.com/store/productId/9NBLGGH4NNS1"
+        Write-Error ""
+        Write-Error "Note: Add install-winget.ps1 as a script BEFORE this script in your Custom Image Template."
+        Write-Error "Note: On Windows 11, winget should already be installed - it may just need to be located."
+        exit 1
+    }
 }
 
 # Check if Chrome is already installed (system-level)
@@ -57,7 +115,7 @@ if ($ChromeInstalled) {
     # Uninstall existing Chrome using winget to ensure clean installation
     Write-Host "Uninstalling existing version to ensure clean installation..."
     try {
-        winget uninstall --id Google.Chrome --scope machine --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Null
+        & $wingetCommand uninstall --id Google.Chrome --scope machine --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Null
         Start-Sleep -Seconds 5
         
         # Wait for uninstall to complete
@@ -84,7 +142,7 @@ try {
     # --scope machine ensures installation for all users (system-wide)
     # --silent performs silent installation
     # --accept-package-agreements and --accept-source-agreements auto-accept licenses
-    $wingetOutput = winget install --id Google.Chrome --scope machine --silent --accept-package-agreements --accept-source-agreements 2>&1
+    $wingetOutput = & $wingetCommand install --id Google.Chrome --scope machine --silent --accept-package-agreements --accept-source-agreements 2>&1
     
     # Check exit code
     if ($LASTEXITCODE -eq 0) {
