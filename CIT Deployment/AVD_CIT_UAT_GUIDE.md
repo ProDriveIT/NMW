@@ -1,5 +1,49 @@
 # Azure Virtual Desktop - User Acceptance Testing Guide
 
+## Contents
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Accessing the Test Environment](#accessing-the-test-environment)
+  - [Step 1: Receive Access Notification](#step-1-receive-access-notification)
+  - [Step 2: Connect Using Remote Desktop App](#step-2-connect-using-remote-desktop-app)
+- [Tester Selection Recommendations](#tester-selection-recommendations)
+  - [Recommended Tester Count](#recommended-tester-count)
+  - [Tester Selection Criteria](#tester-selection-criteria)
+- [Testing Procedures](#testing-procedures)
+  - [Phase 1: Initial Connection and Basic Functionality (15-20 minutes)](#phase-1-initial-connection-and-basic-functionality-15-20-minutes)
+  - [Phase 2: Application Testing (30-45 minutes)](#phase-2-application-testing-30-45-minutes)
+  - [Phase 3: Configuration and Settings Testing (15-20 minutes)](#phase-3-configuration-and-settings-testing-15-20-minutes)
+  - [Phase 4: Real-World Workflow Testing (30-45 minutes)](#phase-4-real-world-workflow-testing-30-45-minutes)
+  - [Phase 5: Performance and Stability Testing (15-20 minutes)](#phase-5-performance-and-stability-testing-15-20-minutes)
+- [Feedback Collection](#feedback-collection)
+  - [How to Provide Feedback](#how-to-provide-feedback)
+  - [Feedback Submission](#feedback-submission)
+  - [Feedback Template](#feedback-template)
+- [Sign-Off Process](#sign-off-process)
+  - [When to Sign Off](#when-to-sign-off)
+  - [Sign-Off Checklist](#sign-off-checklist)
+  - [Sign-Off Form](#sign-off-form)
+  - [Sign-Off Requirements](#sign-off-requirements)
+- [Timeline and Expectations](#timeline-and-expectations)
+  - [Typical UAT Timeline](#typical-uat-timeline)
+  - [Expectations](#expectations)
+- [Security Considerations](#security-considerations)
+  - [Important Security Notes](#important-security-notes)
+  - [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues and Solutions](#common-issues-and-solutions)
+- [Support and Contact](#support-and-contact)
+  - [Getting Help](#getting-help)
+  - [Project Contacts](#project-contacts)
+- [Next Steps After UAT](#next-steps-after-uat)
+- [Appendix: Quick Reference Checklist](#appendix-quick-reference-checklist)
+  - [Pre-Testing Checklist](#pre-testing-checklist)
+  - [Testing Checklist Summary](#testing-checklist-summary)
+  - [Sign-Off Checklist](#sign-off-checklist-1)
+
+---
+
 ## Overview
 
 This guide outlines the User Acceptance Testing (UAT) process for your Azure Virtual Desktop (AVD) custom image. After your custom image has been built, you will be provided with access to a test environment where you can verify that all required applications and configurations are present and working correctly.

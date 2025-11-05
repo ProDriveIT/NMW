@@ -2,6 +2,40 @@
 
 This guide will help you set up infrastructure for Azure Virtual Desktop Custom Image Templates and create your first custom image using the Azure Portal.
 
+## Contents
+
+- [Prerequisites](#prerequisites)
+- [Step 1: Run Infrastructure Setup (Required First Step)](#step-1-run-infrastructure-setup-required-first-step)
+  - [1.1 Open Azure Cloud Shell](#11-open-azure-cloud-shell)
+  - [1.2 Clone the Repository and Run the Script](#12-clone-the-repository-and-run-the-script)
+  - [1.3 What the Script Does](#13-what-the-script-does)
+  - [1.4 Save This Information (Required for Portal)](#14-save-this-information-required-for-portal)
+- [Step 2: Create Custom Image Template in Azure Portal](#step-2-create-custom-image-template-in-azure-portal)
+  - [2.1 Navigate to Custom Image Templates](#21-navigate-to-custom-image-templates)
+  - [2.2 Basics Tab](#22-basics-tab)
+  - [2.3 Source Image Tab](#23-source-image-tab)
+  - [2.4 Distribution Targets Tab](#24-distribution-targets-tab)
+  - [2.5 Build Properties Tab](#25-build-properties-tab)
+  - [2.6 Customizations Tab](#26-customizations-tab)
+  - [2.7 Tags Tab (Optional)](#27-tags-tab-optional)
+  - [2.8 Review and Create](#28-review-and-create)
+- [Step 3: Build the Custom Image](#step-3-build-the-custom-image)
+- [Step 4: Manual Image Creation and Template Updates (Optional)](#step-4-manual-image-creation-and-template-updates-optional)
+  - [4.1 Create a Standalone VM for Manual Customization (If Required)](#41-create-a-standalone-vm-for-manual-customization-if-required)
+  - [4.2 Create a New Template with Updated Scripts or Actions](#42-create-a-new-template-with-updated-scripts-or-actions)
+- [Step 5: Use Your Custom Image](#step-5-use-your-custom-image)
+- [Troubleshooting](#troubleshooting)
+  - [Build Fails](#build-fails)
+  - [Permission Errors](#permission-errors)
+  - [Resource Provider Not Registered](#resource-provider-not-registered)
+  - [Failed to Start Image Template Build - "OperationNotAllowed" Error](#failed-to-start-image-template-build-operationnotallowed-error)
+  - [Gallery Shows But Returns 404 Error in Portal](#gallery-shows-but-returns-404-error-in-portal)
+- [Reference Scripts](#reference-scripts)
+- [Next Steps](#next-steps)
+- [Support](#support)
+
+---
+
 ## Prerequisites
 
 Before you begin, ensure you have:
