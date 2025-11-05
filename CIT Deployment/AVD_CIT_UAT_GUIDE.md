@@ -207,11 +207,6 @@ Use the checklist below to test each application. For each application, verify:
 
 ##### Additional Applications
 
-- [ ] **Windows Calculator**
-  - [ ] Calculator launches
-  - [ ] Basic calculations work
-  - [ ] Scientific/advanced functions work
-
 - [ ] **Snipping Tool** (or Windows Snipping Tool)
   - [ ] Can capture screenshots
   - [ ] Can save screenshots
@@ -240,7 +235,6 @@ Use the checklist below to test each application. For each application, verify:
    - [ ] Internet connectivity works
    - [ ] Can access internal resources (if applicable)
    - [ ] Network drives map correctly (if applicable)
-   - [ ] VPN connection works (if applicable)
 
 3. **User Profile and Data Persistence**
    - [ ] Desktop shortcuts persist after logout/login
@@ -275,12 +269,6 @@ Choose 2-3 scenarios that represent your typical work:
 - [ ] Create charts and pivot tables
 - [ ] Export to PDF
 - [ ] Email the PDF to yourself (if applicable)
-
-**Example Scenario 3: Meeting and Presentation**
-- [ ] Join a Teams meeting
-- [ ] Share your screen
-- [ ] Present a PowerPoint presentation
-- [ ] Take notes in OneNote (if applicable)
 
 **Your Custom Scenarios:**
 - [ ] _________________________________________________
