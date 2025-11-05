@@ -24,6 +24,15 @@ This guide will help you set up infrastructure for Azure Virtual Desktop Custom 
   - [4.1 Create a Standalone VM for Manual Customization (If Required)](#41-create-a-standalone-vm-for-manual-customization-if-required)
   - [4.2 Create a New Template with Updated Scripts or Actions](#42-create-a-new-template-with-updated-scripts-or-actions)
 - [Step 5: Use Your Custom Image](#step-5-use-your-custom-image)
+  - [5.1 Verify Image Build Completion](#51-verify-image-build-completion)
+  - [5.2 Navigate to Host Pools](#52-navigate-to-host-pools)
+  - [5.3 Create a New Host Pool (Scenario A)](#53-create-a-new-host-pool-scenario-a)
+  - [5.4 Configure Virtual Machines with Your Custom Image](#54-configure-virtual-machines-with-your-custom-image)
+  - [5.5 Select Your Custom Image from Gallery](#55-select-your-custom-image-from-gallery)
+  - [5.6 Select VM Size](#56-select-vm-size)
+  - [5.7 Complete Host Pool Configuration](#57-complete-host-pool-configuration)
+  - [5.8 Verify Host Pool Deployment](#58-verify-host-pool-deployment)
+  - [5.9 Update Existing Host Pool (Scenario B)](#59-update-existing-host-pool-scenario-b)
 - [Troubleshooting](#troubleshooting)
   - [Build Fails](#build-fails)
   - [Permission Errors](#permission-errors)
@@ -400,15 +409,222 @@ If you need to install applications that cannot be deployed via script, you can 
 
 ## Step 5: Use Your Custom Image
 
-Once the build completes successfully:
+> **Note**: Only proceed to this step after successfully completing Step 3 and verifying your image build completed successfully.
 
-1. Navigate to **Host pools** in Azure Virtual Desktop
-2. Create a new host pool or update existing one
-3. On the **Virtual Machines** tab:
-   - For **Image**, click **See all images**
-   - Select **Shared Images** (your image is stored in Azure Compute Gallery)
-   - Select your custom image from the gallery (`gal_avd_images`)
-   - **Important**: Choose a VM size that matches the generation of your source image (Gen1 or Gen2)
+### 5.1 Verify Image Build Completion
+
+Before using your custom image, verify the build completed successfully:
+
+1. **Navigate to Custom Image Templates**:
+   - In Azure Portal, go to **Azure Virtual Desktop** > **Custom image templates**
+   - Find your template (e.g., `AVD-GoldenImage-v1`)
+
+2. **Check Build Status**:
+   - The **Status** column should show **Succeeded**
+   - If it shows **Running**, wait for it to complete (click **Refresh** to update)
+   - If it shows **Failed**, see the [Troubleshooting](#troubleshooting) section
+
+3. **Verify Image in Gallery** (Optional):
+   - In Azure Portal, search for **Azure Compute Gallery**
+   - Open `gal_avd_images` (created in Step 1)
+   - Go to **Image definitions** → `avd_session_host`
+   - Verify your image version appears (e.g., `0.0.1`)
+   - Status should be **Replication status: Completed**
+
+### 5.2 Navigate to Host Pools
+
+1. In Azure Portal, navigate to: **Azure Virtual Desktop** > **Host pools**
+
+2. You will see one of two scenarios:
+   - **Scenario A**: You need to create a new host pool
+   - **Scenario B**: You want to update an existing host pool with your custom image
+
+### 5.3 Create a New Host Pool (Scenario A)
+
+If you don't have a host pool yet, create one:
+
+1. **Click + Create** (or **+ Add host pool**)
+
+2. **Basics Tab**:
+   - Complete the required fields:
+     - **Subscription**: Select your subscription
+     - **Resource group**: Select or create a resource group for your host pool
+     - **Host pool name**: Enter a name (e.g., `hp-avd-production`)
+     - **Location**: Select the region where you want the host pool
+     - **Validation environment**: Select **No** (unless creating a validation host pool)
+     - **Host pool type**: Select **Pooled** (recommended) or **Personal** based on your needs
+     - **Load balancing algorithm**: Select **Breadth-first** (recommended) or **Depth-first**
+
+3. **Click Next** to proceed to the **Virtual Machines** tab
+
+4. **Continue with Step 5.4** below to configure the virtual machines with your custom image
+
+### 5.4 Configure Virtual Machines with Your Custom Image
+
+Whether creating a new host pool or updating an existing one, follow these steps to use your custom image:
+
+1. **Navigate to the Virtual Machines Tab**:
+   - If creating new: You're already on this tab
+   - If updating existing: Select your host pool → Click **Virtual machines** → Click **+ Add**
+
+2. **Configure Virtual Machine Settings**:
+
+   Complete the following fields:
+
+   | Field | What to Enter |
+   |-------|---------------|
+   | **Resource group** | Select the resource group for your VMs (can be different from host pool resource group) |
+   | **Name prefix** | Enter a prefix for VM names (e.g., `avd-vm`) |
+   | **Virtual machine location** | Select the region (should match your image replication region) |
+   | **Availability options** | Select **Availability zone** or **Availability set** based on your requirements |
+   | **Security type** | Select **Trusted launch** (recommended) or **Standard** |
+   | **Image** | **See Step 5.5 below** for detailed instructions |
+   | **VM size** | Select a VM size (see Step 5.6 for guidance) |
+   | **Number of VMs** | Enter the number of session hosts you want to create |
+   | **OS disk type** | Select **Premium SSD** (recommended) or **Standard SSD** |
+   | **Virtual network** | Select your existing virtual network |
+   | **Subnet** | Select the subnet for your session hosts |
+   | **Network security group** | Select **None** (recommended) or your existing NSG |
+   | **Public IP** | Select **No** (recommended for security) |
+
+3. **Continue with Step 5.5** to select your custom image
+
+### 5.5 Select Your Custom Image from Gallery
+
+1. **Click on the Image field** (or click **See all images** if available)
+
+2. **Select Image Source**:
+   - You'll see options like **Marketplace**, **My images**, **Shared images**, etc.
+   - Click **Shared images** (your custom image is stored in Azure Compute Gallery)
+
+3. **Select Your Gallery**:
+   - In the **Select an image** dialog, you should see your gallery: `gal_avd_images`
+   - If you don't see it, verify:
+     - The image build completed successfully
+     - The image was replicated to the region you're deploying in
+     - You have permissions to view the gallery
+
+4. **Select Image Definition**:
+   - After selecting the gallery, you'll see image definitions
+   - Select **`avd_session_host`** (created in Step 1)
+
+5. **Select Image Version**:
+   - You'll see available image versions (e.g., `0.0.1`, `0.0.2`)
+   - Select the version you want to use
+   - **Tip**: The latest version is usually recommended unless you need a specific version
+
+6. **Confirm Selection**:
+   - The image details will show:
+     - **Publisher**: ProDriveIT
+     - **Offer**: avd_images
+     - **SKU**: windows11_avd
+     - **Version**: Your selected version (e.g., `0.0.1`)
+   - Click **Select** to confirm
+
+> **Note**: If you don't see your image in the list, ensure:
+> - The image build completed successfully (check Step 5.1)
+> - The image is replicated to the region you're deploying in
+> - You're looking in the correct subscription
+
+### 5.6 Select VM Size
+
+**Important**: Choose a VM size that matches the generation of your source image.
+
+Since your source image is **Gen2** (Windows 11), you must select a **Gen2-compatible VM size**.
+
+1. **Click on the VM size field**
+
+2. **Select a VM Size**:
+   - Recommended sizes for AVD session hosts:
+     - **Standard_D2s_v4** - Good for light to moderate workloads (2 vCPUs, 8 GB RAM)
+     - **Standard_D4s_v4** - Better for moderate workloads (4 vCPUs, 16 GB RAM)
+     - **Standard_D8s_v4** - For heavier workloads (8 vCPUs, 32 GB RAM)
+     - **Standard_B2s** - Budget option for light workloads (2 vCPUs, 4 GB RAM)
+
+3. **Verify Generation Compatibility**:
+   - All VM sizes with "s" suffix (e.g., `Standard_D2s_v4`) support Gen2
+   - Avoid sizes without "s" suffix unless you're certain they support Gen2
+   - If unsure, select a size with "s" suffix
+
+4. **Consider Your Workload**:
+   - **Light users** (basic Office apps, web browsing): `Standard_B2s` or `Standard_D2s_v4`
+   - **Moderate users** (Office apps, multiple tabs, light design work): `Standard_D4s_v4`
+   - **Power users** (design software, development, heavy multitasking): `Standard_D8s_v4` or larger
+
+> **Important**: VM size selection affects cost and performance. Start with a smaller size and scale up if needed. You can change VM sizes later by redeploying session hosts.
+
+### 5.7 Complete Host Pool Configuration
+
+After configuring virtual machines, complete the remaining host pool settings:
+
+1. **Workspace Tab** (if creating new host pool):
+   - **Register desktop app group**: Select **Yes** (recommended)
+   - **Workspace**: Select existing workspace or create new
+
+2. **Tags Tab** (Optional):
+   - Add any tags to organize your resources
+
+3. **Review + Create**:
+   - Review all settings
+   - Verify:
+     - Custom image is selected from `gal_avd_images`
+     - VM size is Gen2-compatible
+     - Network configuration is correct
+   - Click **Create**
+
+4. **Wait for Deployment**:
+   - Deployment typically takes 15-30 minutes
+   - Monitor progress in the **Notifications** area (bell icon)
+   - VMs will be created, domain-joined (if configured), and registered to the host pool
+
+### 5.8 Verify Host Pool Deployment
+
+After deployment completes:
+
+1. **Navigate to Host Pools**:
+   - Go to **Azure Virtual Desktop** > **Host pools**
+   - Select your host pool
+
+2. **Check Virtual Machines**:
+   - Click **Virtual machines** tab
+   - Verify all VMs show **Status: Available**
+   - Verify **Agent version** is shown (indicates AVD agent is installed)
+
+3. **Test Connection** (Optional):
+   - Assign users to the host pool
+   - Have a test user connect using Remote Desktop app
+   - Verify the desktop loads and applications are available
+
+> **Note**: If VMs show as **Unavailable** or have errors, check:
+> - Network connectivity
+> - Domain join status (if using domain join)
+> - AVD agent installation status
+> - See [Troubleshooting](#troubleshooting) section for more help
+
+### 5.9 Update Existing Host Pool (Scenario B)
+
+If you want to update an existing host pool with your new custom image:
+
+1. **Navigate to Your Host Pool**:
+   - Go to **Azure Virtual Desktop** > **Host pools**
+   - Select your existing host pool
+
+2. **Add New Session Hosts**:
+   - Click **Virtual machines** tab
+   - Click **+ Add**
+   - Follow **Step 5.4** through **Step 5.7** to configure new VMs with your custom image
+
+3. **Replace Existing Session Hosts** (Optional):
+   - If you want to replace existing hosts:
+     - Drain existing hosts (set to drain mode to prevent new sessions)
+     - Wait for users to disconnect
+     - Delete old VMs
+     - Add new VMs using your custom image (follow Step 5.4)
+
+> **Note**: When updating an existing host pool, consider:
+> - Adding new VMs first, then removing old ones (zero-downtime approach)
+> - Testing the new image with a subset of users before full rollout
+> - Using validation host pools for testing before production deployment
 
 ## Troubleshooting
 
