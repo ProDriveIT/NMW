@@ -105,8 +105,9 @@ A SAS (Shared Access Signature) token provides secure, time-limited access to yo
 5. Configure the SAS token:
    - **Signing key**: `Key1` (default)
    - **Permissions**: 
-     - ✓ **Read** (required)
-     - Uncheck all other permissions
+     - ✓ **Read** (required - this is the only permission needed)
+     - Uncheck all other permissions (Write, Delete, List, Add, Create, etc.)
+     - **Why only Read?** The script downloads the blob to the local VM and extracts it there. No blob modifications are performed, so only Read permission is required.
    - **Start time**: Current date/time (or leave blank for immediate access)
    - **Expiry time**: Set far in the future (e.g., 1-2 years from now)
      - **Important**: Set a long expiry since the token will be used in your CIT script
@@ -131,7 +132,9 @@ $storageAccount = Get-AzStorageAccount `
 
 $ctx = $storageAccount.Context
 
-# Generate SAS token with read permission, valid for 1 year
+# Generate SAS token with read permission only, valid for 1 year
+# Note: Only 'r' (read) permission is needed because the script only downloads the blob.
+# The extraction happens locally on the VM, so no write/delete permissions are required.
 $sasToken = New-AzStorageBlobSASToken `
     -Container $ContainerName `
     -Blob $BlobName `

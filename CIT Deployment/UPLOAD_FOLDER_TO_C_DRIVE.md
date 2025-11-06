@@ -103,6 +103,7 @@ This method is best if:
    - Click **Generate SAS token and URL**
    - Configure:
      - **Permissions**: **Read** only (uncheck all others)
+       - **Note**: Only Read permission is needed because the script downloads the blob and extracts it locally. No blob modifications are performed.
      - **Expiry**: Set a date far in the future (e.g., 1-2 years from now)
        - **Important**: CIT builds use this token repeatedly, so set a long expiry
    - Click **Generate SAS token and URL**
