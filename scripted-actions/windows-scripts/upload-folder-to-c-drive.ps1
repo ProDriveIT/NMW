@@ -89,8 +89,33 @@ Write-Host "Extracting ZIP file to: $DestinationPath"
 try {
     # Use .NET classes for extraction (built into Windows)
     Add-Type -AssemblyName System.IO.Compression.FileSystem
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($ZipFilePath, $DestinationPath, $true) # $true = overwrite existing files
-    Write-Host "Extraction completed successfully."
+    
+    # Extract each entry individually to handle overwriting
+    # ExtractToDirectory doesn't support overwrite parameter, so we need to extract manually
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($ZipFilePath)
+    try {
+        foreach ($entry in $zip.Entries) {
+            $entryPath = Join-Path $DestinationPath $entry.FullName
+            
+            # Create directory if needed
+            $entryDir = Split-Path -Parent $entryPath
+            if ($entryDir -and !(Test-Path $entryDir)) {
+                New-Item -ItemType Directory -Path $entryDir -Force | Out-Null
+            }
+            
+            # Skip if entry is a directory
+            if ($entryPath.EndsWith('\') -or $entryPath.EndsWith('/')) {
+                continue
+            }
+            
+            # Extract file (overwrites if exists)
+            [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $entryPath, $true)
+        }
+        Write-Host "Extraction completed successfully."
+    }
+    finally {
+        $zip.Dispose()
+    }
 }
 catch {
     Write-Error "Failed to extract ZIP file: $_"
