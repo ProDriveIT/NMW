@@ -1,0 +1,302 @@
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] Packer version: 1.14.0 [go1.23.2 linux amd64]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] PACKER_CONFIG env var not set; checking the default config file path
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] PACKER_CONFIG env var set; attempting to open config file: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [WARN] Config file doesn't exist: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] Setting cache directory: /root/.cache/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER e: Running in background, not using a TTY
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [TRACE] listing potential installations for <nil> that match "". plugingetter.ListInstallationsOptions{PluginDirectory:"/root/.config/packer/plugins", BinaryInstallationOptions:plugingetter.BinaryInstallationOptions{APIVersionMajor:"5", APIVersionMinor:"0", OS:"linux", ARCH:"amd64", Ext:"", Checksummers:[]plugingetter.Checksummer{plugingetter.Checksummer{Type:"sha256", Hash:(*sha256.digest)(0xc0006c2000)}}, ReleasesOnly:false}}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] found external [arm chroot dtl] builders from azure plugin
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 found external [dtlartifact] provisioner from azure plugin
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 found external [keyvaultsecret] datasource from azure plugin
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 found external [-packer-default-plugin-name-] provisioner from windows-update plugin
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [TRACE] Using protobuf for communication with plugins
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] Starting external plugin /root/.config/packer/plugins/github.com/hashicorp/azure/packer-plugin-azure_v2.4.0_x5.0_linux_amd64 start builder --protobuf arm
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Starting plugin: /root/.config/packer/plugins/github.com/hashicorp/azure/packer-plugin-azure_v2.4.0_x5.0_linux_amd64 []string{"/root/.config/packer/plugins/github.com/hashicorp/azure/packer-plugin-azure_v2.4.0_x5.0_linux_amd64", "start", "builder", "--protobuf", "arm"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Waiting for RPC address for: /root/.config/packer/plugins/github.com/hashicorp/azure/packer-plugin-azure_v2.4.0_x5.0_linux_amd64
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:22 Plugin address: unix /tmp/packer-plugin3038818225
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:22 Waiting for connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Received unix RPC address for /root/.config/packer/plugins/github.com/hashicorp/azure/packer-plugin-azure_v2.4.0_x5.0_linux_amd64: addr is /tmp/packer-plugin3038818225
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:22 Serving a plugin connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:22 [TRACE] starting builder arm
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] Starting external plugin /aib/packerInput/packer execute --protobuf packer-provisioner-file
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Starting plugin: /aib/packerInput/packer []string{"/aib/packerInput/packer", "execute", "--protobuf", "packer-provisioner-file"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Waiting for RPC address for: /aib/packerInput/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: [INFO] Packer version: 1.14.0 [go1.23.2 linux amd64]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: [INFO] PACKER_CONFIG env var not set; checking the default config file path
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: [INFO] PACKER_CONFIG env var set; attempting to open config file: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: [WARN] Config file doesn't exist: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: [INFO] Setting cache directory: /root/.cache/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: Plugin address: unix /tmp/packer-plugin2647565055
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: Waiting for connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Received unix RPC address for /aib/packerInput/packer: addr is /tmp/packer-plugin2647565055
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 packer-provisioner-file plugin: Serving a plugin connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 [INFO] Starting external plugin /aib/packerInput/packer execute --protobuf packer-provisioner-powershell
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Starting plugin: /aib/packerInput/packer []string{"/aib/packerInput/packer", "execute", "--protobuf", "packer-provisioner-powershell"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:22 Waiting for RPC address for: /aib/packerInput/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] Packer version: 1.14.0 [go1.23.2 linux amd64]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] PACKER_CONFIG env var not set; checking the default config file path
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] PACKER_CONFIG env var set; attempting to open config file: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [WARN] Config file doesn't exist: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] Setting cache directory: /root/.cache/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Received unix RPC address for /aib/packerInput/packer: addr is /tmp/packer-plugin53432460
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Plugin address: unix /tmp/packer-plugin53432460
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Waiting for connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Serving a plugin connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 [INFO] Starting external plugin /aib/packerInput/packer execute --protobuf packer-provisioner-powershell
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Starting plugin: /aib/packerInput/packer []string{"/aib/packerInput/packer", "execute", "--protobuf", "packer-provisioner-powershell"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Waiting for RPC address for: /aib/packerInput/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] Packer version: 1.14.0 [go1.23.2 linux amd64]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] PACKER_CONFIG env var not set; checking the default config file path
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] PACKER_CONFIG env var set; attempting to open config file: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [WARN] Config file doesn't exist: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] Setting cache directory: /root/.cache/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Received unix RPC address for /aib/packerInput/packer: addr is /tmp/packer-plugin4191725336
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Plugin address: unix /tmp/packer-plugin4191725336
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Waiting for connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Serving a plugin connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 [INFO] Starting external plugin /aib/packerInput/packer execute --protobuf packer-provisioner-powershell
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Starting plugin: /aib/packerInput/packer []string{"/aib/packerInput/packer", "execute", "--protobuf", "packer-provisioner-powershell"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Waiting for RPC address for: /aib/packerInput/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] Packer version: 1.14.0 [go1.23.2 linux amd64]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] PACKER_CONFIG env var not set; checking the default config file path
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] PACKER_CONFIG env var set; attempting to open config file: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [WARN] Config file doesn't exist: /root/.packerconfig
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: [INFO] Setting cache directory: /root/.cache/packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Plugin address: unix /tmp/packer-plugin1663486806
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Waiting for connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Received unix RPC address for /aib/packerInput/packer: addr is /tmp/packer-plugin1663486806
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Serving a plugin connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Preparing build: azure-arm
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 Error looking up environment using metadata host: retrieving metadata from endpoint "management.azure.com": performing request: Get "management.azure.com/metadata/endpoints?[REDACTED]": unsupported protocol scheme "".
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: Falling back to hardcoded mechanism...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 Error looking up environment using metadata host: retrieving metadata from endpoint "management.azure.com": performing request: Get "management.azure.com/metadata/endpoints?[REDACTED]": unsupported protocol scheme "".
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: Falling back to hardcoded mechanism...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Using script default execute command powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }"
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Using script default elevated execute command powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }"
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Using script default execute command powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }"
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Using script default elevated execute command powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }"
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Using inline default execute command powershell -executionpolicy bypass -file {{.Path}}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-provisioner-powershell plugin: Using inline default elevated execute command powershell -executionpolicy bypass -file {{.Path}}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 ui: azure-arm: output will be in this color.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 ui: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Build debug mode: false
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Force build: false
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 On error: cleanup
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Waiting on builds to complete...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Starting build run: azure-arm
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 Running builder: azure-arm
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 ui: ==> azure-arm: Running builder ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 :: Configuration
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CaptureNamePrefix=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CaptureContainerName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 SharedGalleryImageVersionEndOfLifeDate=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ImagePublisher=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ImageOffer=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ImageSku=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ImageVersion=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ImageUrl=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CustomManagedImageName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CustomManagedImageResourceGroupName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 Location=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 VMSize=Standard_D4s_v4
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ManagedImageResourceGroupName=IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ManagedImageName=packerImg_41c761fadcff40ef8ffe94625d6a431a
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ManagedImageStorageAccountType=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ManagedImageOSDiskSnapshotName=packerImg_41c761fadcff40ef8ffe94625d6a431a_os_disk
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ManagedImageDataDiskSnapshotPrefix=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 ResourceGroupName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 StorageAccount=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 TempComputeName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 TempNicName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 TempResourceGroupName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 BuildResourceGroupName=IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 BuildKeyVaultName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 BuildKeyVaultSecretName=********************
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 BuildKeyVaultSKU=standard
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 DiskEncryptionSetId=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 VirtualNetworkName=aibvnett4d8b
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 VirtualNetworkSubnetName=remotesubnet
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 VirtualNetworkResourceGroupName=IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CustomDataFile=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CustomData=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 UserDataFile=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 UserData=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CustomScript=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 OSType=Windows
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 TempOSDiskName=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 DiskCachingType=None
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 BootDiagSTGAccount=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 CustomResourcePrefix=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 LicenseType=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 PublicIpSKU=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 SecurityType=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 SecurityEncryptionType=
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 UserName=packer
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 Password=********************************
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 ui: ==> azure-arm: Creating Azure Resource Manager (ARM) client ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 [DEBUG] POST https://login.microsoftonline.com/2106f27c-fb2e-4787-b960-3dc6aac54826/oauth2/v2.0/token
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 ui: ==> azure-arm: ARM Client successfully created
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:23 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/images/packerImg_41c761fadcff40ef8ffe94625d6a431a?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:24 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:24 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/snapshots/packerImg_41c761fadcff40ef8ffe94625d6a431a_os_disk?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:24 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:24 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:24 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:24 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/rg-avd-cit-infrastructure/providers/Microsoft.Compute/galleries/gal_avd_images/images/avd_session_host?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:24 ui: ==> azure-arm: Getting source image id for the deployment ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:24 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:24 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/rg-avd-cit-infrastructure/providers/Microsoft.Compute/galleries/gal_avd_images/images/avd_session_host/versions/0.0.2?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm:  -> SourceImageName: '/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/rg-avd-cit-infrastructure/providers/Microsoft.Compute/galleries/gal_avd_images/images/avd_session_host/versions/0.0.2'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:25 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm: Using existing resource group ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm:  -> ResourceGroupName : 'IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm:  -> Location          : 'uksouth'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm: Validating deployment template ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm:  -> ResourceGroupName : 'IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 ui: ==> azure-arm:  -> DeploymentName    : 'kvpkrdpnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:25 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:25 [DEBUG] POST https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/kvpkrdpnyxb7h5smq/validate?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:26 ui: ==> azure-arm: Deploying deployment template ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:26 ui: ==> azure-arm:  -> ResourceGroupName : 'IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:26 ui: ==> azure-arm:  -> DeploymentName    : 'kvpkrdpnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:26 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:26 [DEBUG] PUT https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/kvpkrdpnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:37 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:37 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/kvpkrdpnyxb7h5smq/operationStatuses/08584391817390175989?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:47 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/kvpkrdpnyxb7h5smq/operationStatuses/08584391817390175989?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm: Getting the certificate's URL ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm:  -> Key Vault Name        : 'pkrkvnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm:  -> Key Vault Secret Name : 'packerKeyVaultSecret'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:47 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.KeyVault/vaults/pkrkvnyxb7h5smq/secrets/packerKeyVaultSecret?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm:  -> Certificate URL       : 'https://pkrkvnyxb7h5smq.vault.azure.net/secrets/packerKeyVaultSecret/3c21f415f751427abd9a19e698337dea'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm: Setting the certificate's URL ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm: Validating deployment template ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm:  -> ResourceGroupName : 'IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 ui: ==> azure-arm:  -> DeploymentName    : 'pkrdpnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:47 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:47 [DEBUG] POST https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/validate?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:48 ui: ==> azure-arm: Deploying deployment template ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:48 ui: ==> azure-arm:  -> ResourceGroupName : 'IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:48 ui: ==> azure-arm:  -> DeploymentName    : 'pkrdpnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:48 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:48 [DEBUG] PUT https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:32:59 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:32:59 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:33:09 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:33:09 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:33:19 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:33:19 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:33:29 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:33:29 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:33:39 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:33:39 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:33:49 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:33:49 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:33:59 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:33:59 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:10 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourcegroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq/operationStatuses/08584391817167708266?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm: Getting the VM's IP address ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm:  -> ResourceGroupName   : 'IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm:  -> PublicIPAddressName : 'pkripnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm:  -> NicName             : 'pkrninyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm:  -> Network Connection  : 'PrivateEndpoint'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:10 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Network/networkInterfaces/pkrninyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm:  -> IP Address          : '10.0.1.4'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:10 Waiting for WinRM, up to timeout: 30m0s
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 ui: ==> azure-arm: Waiting for WinRM to become available...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:10 [INFO] Attempting WinRM connection...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:10 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:10 [DEBUG] connecting to remote shell using WinRM
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:16 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:16 Checking that WinRM is connected with: 'powershell.exe -EncodedCommand JABQAHIAbwBnAHIAZQBzAHMAUAByAGUAZgBlAHIAZQBuAGMAZQAgAD0AIAAnAFMAaQBsAGUAbgB0AGwAeQBDAG8AbgB0AGkAbgB1AGUAJwA7AGkAZgAgACgAVABlAHMAdAAtAFAAYQB0AGgAIAB2AGEAcgBpAGEAYgBsAGUAOgBnAGwAbwBiAGEAbAA6AFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlACkAewAkAFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlAD0AJwBTAGkAbABlAG4AdABsAHkAQwBvAG4AdABpAG4AdQBlACcAfQA7ACAAZQBjAGgAbwAgACIAVwBpAG4AUgBNACAAYwBvAG4AbgBlAGMAdABlAGQALgAiAA=='
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:17 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:17 [INFO] starting remote command: powershell.exe -EncodedCommand JABQAHIAbwBnAHIAZQBzAHMAUAByAGUAZgBlAHIAZQBuAGMAZQAgAD0AIAAnAFMAaQBsAGUAbgB0AGwAeQBDAG8AbgB0AGkAbgB1AGUAJwA7AGkAZgAgACgAVABlAHMAdAAtAFAAYQB0AGgAIAB2AGEAcgBpAGEAYgBsAGUAOgBnAGwAbwBiAGEAbAA6AFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlACkAewAkAFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlAD0AJwBTAGkAbABlAG4AdABsAHkAQwBvAG4AdABpAG4AdQBlACcAfQA7ACAAZQBjAGgAbwAgACIAVwBpAG4AUgBNACAAYwBvAG4AbgBlAGMAdABlAGQALgAiAA==
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:19 [INFO] command 'powershell.exe -EncodedCommand JABQAHIAbwBnAHIAZQBzAHMAUAByAGUAZgBlAHIAZQBuAGMAZQAgAD0AIAAnAFMAaQBsAGUAbgB0AGwAeQBDAG8AbgB0AGkAbgB1AGUAJwA7AGkAZgAgACgAVABlAHMAdAAtAFAAYQB0AGgAIAB2AGEAcgBpAGEAYgBsAGUAOgBnAGwAbwBiAGEAbAA6AFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlACkAewAkAFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlAD0AJwBTAGkAbABlAG4AdABsAHkAQwBvAG4AdABpAG4AdQBlACcAfQA7ACAAZQBjAGgAbwAgACIAVwBpAG4AUgBNACAAYwBvAG4AbgBlAGMAdABlAGQALgAiAA==' exited with code: 0
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 ui: ==> azure-arm: WinRM connected.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:19 Connected to machine
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 ui: ==> azure-arm: Connected to WinRM!
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:19 Running the provision hook
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 ui: ==> azure-arm: Uploading /aib/packerInput/DeprovisioningScript.txt => c:\DeprovisioningScript.ps1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:19 Uploading file to 'c:\DeprovisioningScript.ps1'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 packer-provisioner-file plugin: [INFO] 1288 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:19 [INFO] 1288 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 packer-provisioner-file plugin: closing
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 closing
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:22 closing
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 ui: ==> azure-arm: Provisioning with Powershell...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 ui: ==> azure-arm: Provisioning with powershell script: /aib/packerInput/script_0
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 packer-provisioner-powershell plugin: Opening /aib/packerInput/script_0 for reading
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 packer-provisioner-powershell plugin: Uploading env vars to c:/Windows/Temp/packer-ps-env-vars-690c7937-fe8e-2cbe-6c06-c0e773d70954.ps1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 packer-provisioner-powershell plugin: [INFO] 74 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 [INFO] 74 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:22 Uploading file to 'c:/Windows/Temp/packer-ps-env-vars-690c7937-fe8e-2cbe-6c06-c0e773d70954.ps1'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:23 packer-provisioner-powershell plugin: Building elevated command wrapper for: powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. c:/Windows/Temp/packer-ps-env-vars-690c7937-fe8e-2cbe-6c06-c0e773d70954.ps1; &'c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1'; exit $LastExitCode }"
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:23 packer-provisioner-powershell plugin: Command [powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. c:/Windows/Temp/packer-ps-env-vars-690c7937-fe8e-2cbe-6c06-c0e773d70954.ps1; &'c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1'; exit $LastExitCode }" > %SYSTEMROOT%/Temp/packer-690c79af-682c-d528-0c43-06d95eae5efe.out 2>&1] converted to [powershell -executionpolicy bypass &#34;&amp; { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value &#39;SilentlyContinue&#39;};. c:/Windows/Temp/packer-ps-env-vars-690c7937-fe8e-2cbe-6c06-c0e773d70954.ps1; &amp;&#39;c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1&#39;; exit $LastExitCode }&#34; &gt; %SYSTEMROOT%/Temp/packer-690c79af-682c-d528-0c43-06d95eae5efe.out 2&gt;&amp;1] for use in XML string
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:23 packer-provisioner-powershell plugin: Uploading elevated shell wrapper for command [powershell -executionpolicy bypass "& { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. c:/Windows/Temp/packer-ps-env-vars-690c7937-fe8e-2cbe-6c06-c0e773d70954.ps1; &'c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1'; exit $LastExitCode }" > %SYSTEMROOT%/Temp/packer-690c79af-682c-d528-0c43-06d95eae5efe.out 2>&1] to [C:/Windows/Temp/packer-elevated-shell-690c79af-5812-bbc3-4f8b-df965db62656.ps1]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:23 packer-provisioner-powershell plugin: [INFO] 3490 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:23 [INFO] 3490 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:23 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:23 Uploading file to 'C:/Windows/Temp/packer-elevated-shell-690c79af-5812-bbc3-4f8b-df965db62656.ps1'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:25 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:25 Uploading file to 'c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:25 [INFO] 1938 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:25 packer-provisioner-powershell plugin: [INFO] 1938 bytes written for 'uploadData'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:27 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:34:27 [INFO] starting remote command: powershell -executionpolicy bypass -file "C:/Windows/Temp/packer-elevated-shell-690c79af-5812-bbc3-4f8b-df965db62656.ps1"
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:29 ui: ==> azure-arm: Downloading upload script...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:29 ui: ==> azure-arm: Executing upload script for CCH Apps...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:29 ui: ==> azure-arm: Using Azure Blob Storage URL with SAS token
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:29 ui: ==> azure-arm: Downloading folder ZIP file from: https://stavdcitscripts6009.blob.core.windows.net/cch-apps/CCHAPPS.zip?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:54 ui: ==> azure-arm: Download completed successfully.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:54 ui: ==> azure-arm: ZIP file size: 1978146183 bytes
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:34:54 ui: ==> azure-arm: Extracting ZIP file to: C:\
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:36:56 ui: ==> azure-arm: Extraction completed successfully.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:07 [INFO] command 'powershell -executionpolicy bypass -file "C:/Windows/Temp/packer-elevated-shell-690c79af-5812-bbc3-4f8b-df965db62656.ps1"' exited with code: 1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:07 [INFO] RPC endpoint: Communicator ended with: 1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 [INFO] 1120 bytes written for 'stdout'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 [INFO] 0 bytes written for 'stderr'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 [INFO] RPC client: Communicator ended with: 1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 [INFO] RPC endpoint: Communicator ended with: 1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: Successfully extracted 191720 items to C:\
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-provisioner-powershell plugin: [INFO] 1120 bytes written for 'stdout'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-provisioner-powershell plugin: [INFO] 0 bytes written for 'stderr'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-provisioner-powershell plugin: [INFO] RPC client: Communicator ended with: 1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: ZIP file cleaned up.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: Folder upload to C:\ drive completed successfully.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: C:\Windows\Temp\script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1 : CCH Apps upload failed with exit code:
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: At line:1 char:215
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: + ... d70954.ps1; &'c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56 ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm:     + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm:     + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,script-690c7937-0f29-4e7b-a3af-4f49fb5
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm:    6a5a6.ps1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm:
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-provisioner-powershell plugin: c:/Windows/Temp/script-690c7937-0f29-4e7b-a3af-4f49fb56a5a6.ps1 returned with exit code 1
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: Provisioning step had errors: Running the cleanup provisioner, if present...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 ui: ==> azure-arm: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER ==> azure-arm: Deleting Virtual Machine deployment and its attached resources...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:07 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/virtualMachines/pkrvmnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:07 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/deployments/pkrdpnyxb7h5smq/operations?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:07 [INFO] Attempting deletion -> pkrvmnyxb7h5smq : Microsoft.Compute/virtualMachines
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:07 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:07 [DEBUG] DELETE https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/virtualMachines/pkrvmnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:17 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:17 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/virtualMachines/pkrvmnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:27 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:27 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/virtualMachines/pkrvmnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:38 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:38 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/virtualMachines/pkrvmnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:38 ui: ==> azure-arm: Deleted -> pkrvmnyxb7h5smq : 'Microsoft.Compute/virtualMachines'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:38 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:38 [INFO] Attempting deletion -> pkrninyxb7h5smq : Microsoft.Network/networkInterfaces
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:38 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:38 [DEBUG] DELETE https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Network/networkInterfaces/pkrninyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:48 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:48 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Network/networkInterfaces/pkrninyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:48 ui: ==> azure-arm: Deleted -> pkrninyxb7h5smq : 'Microsoft.Network/networkInterfaces'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:48 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:48 [DEBUG] DELETE https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/disks/pkrosnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:58 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:58 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/disks/pkrosnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:58 ui: ==> azure-arm: Deleted -> Microsoft.Compute/disks : '/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Compute/disks/pkrosnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:58 ui: ==> azure-arm: Removing the created Deployment object: 'pkrdpnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:39:58 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:39:58 [DEBUG] DELETE https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:09 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:40:09 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/pkrdpnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:09 ui: ==> azure-arm: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER ==> azure-arm: Deleting KeyVault created during build
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:09 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:40:09 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/deployments/kvpkrdpnyxb7h5smq/operations?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:09 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:40:09 [INFO] Attempting deletion -> pkrkvnyxb7h5smq : Microsoft.KeyVault/vaults
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:09 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:40:09 [DEBUG] DELETE https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.KeyVault/vaults/pkrkvnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:12 ui: ==> azure-arm: Deleted -> pkrkvnyxb7h5smq : 'Microsoft.KeyVault/vaults'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:12 ui: ==> azure-arm: Removing the created Deployment object: 'kvpkrdpnyxb7h5smq'
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:12 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:40:12 [DEBUG] DELETE https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/kvpkrdpnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 packer-plugin-azure_v2.4.0_x5.0_linux_amd64 plugin: 2025/11/06 10:40:22 [DEBUG] GET https://management.azure.com/subscriptions/fb8c75fd-6b99-44d1-b127-06b4c3e4c816/resourceGroups/IT_AzureBackupRG_uksouth_1_AVD-GoldenImage-_1a23becc-f3b2-4895-89c0-161a046e7848/providers/Microsoft.Resources/deployments/kvpkrdpnyxb7h5smq?[REDACTED]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 ui: ==> azure-arm: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER ==> azure-arm: The resource group was not created by Packer, not deleting ...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 ui error: Build 'azure-arm' errored after 7 minutes 59 seconds: Script exited with non-zero exit status: 1. Allowed exit codes are: [0]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 ui: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER ==> Wait completed after 7 minutes 59 seconds
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 machine readable: error-count []string{"1"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 ui error: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER ==> Some builds didn't complete successfully and had errors:
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 machine readable: azure-arm,error []string{"Script exited with non-zero exit status: 1. Allowed exit codes are: [0]"}
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 ui error: --> azure-arm: Script exited with non-zero exit status: 1. Allowed exit codes are: [0]
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 ui: 
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER ==> Builds finished but no artifacts were created.
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 waiting for all plugin processes to complete...
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 /aib/packerInput/packer: plugin process exited
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 /aib/packerInput/packer: plugin process exited
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 /aib/packerInput/packer: plugin process exited
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 /aib/packerInput/packer: plugin process exited
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER 2025/11/06 10:40:22 /root/.config/packer/plugins/github.com/hashicorp/azure/packer-plugin-azure_v2.4.0_x5.0_linux_amd64: plugin process exited
+[35544ae5-e12b-4c5a-8f49-2075e89729f5] PACKER Done exporting Packer logs to Azure Storage.

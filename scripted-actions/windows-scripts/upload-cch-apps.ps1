@@ -28,8 +28,25 @@ try {
     Write-Host "Executing upload script for CCH Apps..."
     & $ScriptPath -BlobStorageUrl $BlobStorageUrl -SASToken $SASToken -DestinationPath $DestinationPath -ZipFileName $ZipFileName
     
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "CCH Apps upload completed successfully."
+    # Check exit code (PowerShell scripts set $LASTEXITCODE when they explicitly exit)
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq $null) {
+        # If exit code is 0 or null (script completed without explicit exit), check if CCHAPPS folder exists
+        if (Test-Path "C:\CCHAPPS") {
+            Write-Host "CCH Apps upload completed successfully."
+            Write-Host "CCHAPPS folder verified at: C:\CCHAPPS"
+        }
+        else {
+            Write-Warning "Script completed but C:\CCHAPPS folder not found. Checking C:\ for extracted content..."
+            $extractedItems = Get-ChildItem -Path "C:\" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "*CCH*" }
+            if ($extractedItems) {
+                Write-Host "Found CCH-related folders: $($extractedItems.Name -join ', ')"
+                Write-Host "CCH Apps upload completed (folder may be in different location)."
+            }
+            else {
+                Write-Error "CCH Apps upload may have failed - CCHAPPS folder not found."
+                exit 1
+            }
+        }
     }
     else {
         Write-Error "CCH Apps upload failed with exit code: $LASTEXITCODE"

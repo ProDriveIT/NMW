@@ -143,5 +143,8 @@ if (Test-Path $ZipFilePath) {
 
 Write-Host "Folder upload to C:\ drive completed successfully."
 
+# Exit with success code
+exit 0
+
 ### End Script ###
 
