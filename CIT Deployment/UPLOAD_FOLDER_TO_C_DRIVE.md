@@ -73,13 +73,28 @@ This method is best if:
 - Folder size is large (>100MB)
 - You need better control over access
 
-### Step 1: Upload ZIP to Azure Blob Storage
+> **⚠️ IMPORTANT**: Before using Azure Blob Storage, you must configure the storage account to allow access from Azure services (including CIT build VMs). See [Storage Account Access Configuration Guide](./STORAGE_ACCOUNT_ACCESS_FOR_CIT.md) for detailed instructions.
+
+### Step 1: Configure Storage Account Access
+
+**This step is required before uploading files!**
+
+1. Navigate to your **Storage Account** → **Networking**
+2. Under **Firewalls and virtual networks**:
+   - Enable **Allow Azure services on the trusted services list** ✓
+   - Set **Default action** to **Allow** (or configure specific rules)
+3. Click **Save**
+
+> For detailed instructions and PowerShell scripts, see [Storage Account Access Configuration Guide](./STORAGE_ACCOUNT_ACCESS_FOR_CIT.md).
+
+### Step 2: Upload ZIP to Azure Blob Storage
 
 1. **Create a ZIP file** of your folder (same as Method 1, Step 1)
 
 2. **Upload to Azure Blob Storage**:
    - In Azure Portal, navigate to your Storage Account
    - Go to **Containers** (or create a new container, e.g., `build-files`)
+   - Ensure container access level is set to **Private** (recommended for security)
    - Click **Upload** → Select your ZIP file → Upload
    - Copy the **Blob URL** (e.g., `https://[storageaccount].blob.core.windows.net/build-files/custom-folder.zip`)
 
@@ -87,12 +102,13 @@ This method is best if:
    - Click on your uploaded blob (ZIP file)
    - Click **Generate SAS token and URL**
    - Configure:
-     - **Permissions**: Read only
-     - **Expiry**: Set a date far in the future (e.g., 1 year from now)
+     - **Permissions**: **Read** only (uncheck all others)
+     - **Expiry**: Set a date far in the future (e.g., 1-2 years from now)
+       - **Important**: CIT builds use this token repeatedly, so set a long expiry
    - Click **Generate SAS token and URL**
    - Copy the **SAS token** (the part after the `?` in the URL, e.g., `sv=2022-11-02&ss=b&srt=co&sp=r&se=2025-12-31T23:59:59Z&st=2024-01-01T00:00:00Z&sig=...`)
 
-### Step 2: Add Script to Custom Image Template
+### Step 3: Add Script to Custom Image Template
 
 1. In Azure Portal, navigate to your **Custom Image Template**
 2. Go to **Customizations** tab
@@ -188,7 +204,9 @@ Invoke-WebRequest -Uri $ScriptUrl -OutFile $ScriptPath -UseBasicParsing
 
 - **GitHub Method**: Files are publicly accessible (if using GitHub Releases)
 - **Azure Blob Storage Method**: Files are private (requires SAS token)
+- **Storage Account Access**: Must configure network access to allow Azure services (see [Storage Account Access Guide](./STORAGE_ACCOUNT_ACCESS_FOR_CIT.md))
 - Store SAS tokens securely - never commit them to version control
+- Use wrapper scripts with hardcoded tokens, or use secure parameter storage
 
 ---
 
@@ -196,12 +214,17 @@ Invoke-WebRequest -Uri $ScriptUrl -OutFile $ScriptPath -UseBasicParsing
 
 ### Script Fails to Download ZIP
 
-**Symptoms**: Error "Failed to download ZIP file"
+**Symptoms**: Error "Failed to download ZIP file" or "403 Forbidden"
 
 **Solutions**:
 - Verify the URL is accessible (try opening in browser)
 - Check if GitHub rate limiting is blocking the download
-- For Azure Blob Storage, verify SAS token is valid and not expired
+- For Azure Blob Storage:
+  - **Verify SAS token is valid and not expired** (check expiry date)
+  - **Check storage account network access**: Ensure "Allow Azure services" is enabled
+  - **Verify container access level**: Should be Private with SAS token
+  - **Test the full URL**: `https://[account].blob.core.windows.net/[container]/[file]?[SAS-token]`
+  - See [Storage Account Access Guide](./STORAGE_ACCOUNT_ACCESS_FOR_CIT.md) for detailed troubleshooting
 - Ensure network connectivity during build
 
 ### Extraction Fails
