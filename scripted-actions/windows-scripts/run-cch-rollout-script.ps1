@@ -146,30 +146,68 @@ function New-ScheduledTaskForRollout {
             # Wrapper for "run every boot" mode - validates and syncs on every boot
             $WrapperScript = @"
 # Wrapper script for CCH Rollout - runs on every boot for continuous validation/sync
+`$LogFile = "C:\CCHAPPS\CCH-Rollout-Wrapper.log"
 `$TaskName = "$TaskName"
 `$BatchFilePath = "$BatchFilePath"
 `$RequiredFileServer = "$RequiredFileServer"
 
-# Check file server connectivity
-Write-Host "Checking connectivity to `$RequiredFileServer..."
-`$pingResult = Test-Connection -ComputerName `$RequiredFileServer -Count 2 -Quiet -ErrorAction SilentlyContinue
-if (-not `$pingResult) {
-    Write-Warning "`$RequiredFileServer is not reachable. Task will retry on next boot."
+# Function to write log with timestamp
+function Write-Log {
+    param([string]`$Message)
+    `$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    `$logMessage = "[`$timestamp] `$Message"
+    Add-Content -Path `$LogFile -Value `$logMessage -ErrorAction SilentlyContinue
+    Write-Host `$logMessage
+}
+
+# Start logging
+Write-Log "=== CCH Rollout Wrapper Started (Every Boot Mode) ==="
+Write-Log "Batch file path: `$BatchFilePath"
+Write-Log "Required file server: `$RequiredFileServer"
+
+# Ensure working directory exists
+Set-Location "C:\CCHAPPS" -ErrorAction SilentlyContinue
+Write-Log "Working directory: `$(Get-Location)"
+
+# Check if batch file exists
+if (-not (Test-Path `$BatchFilePath)) {
+    Write-Log "ERROR: Batch file not found at `$BatchFilePath"
     exit 1
 }
 
+# Check file server connectivity
+Write-Log "Checking connectivity to `$RequiredFileServer..."
+`$pingResult = Test-Connection -ComputerName `$RequiredFileServer -Count 2 -Quiet -ErrorAction SilentlyContinue
+if (-not `$pingResult) {
+    Write-Log "WARNING: `$RequiredFileServer is not reachable. Task will retry on next boot."
+    exit 1
+}
+Write-Log "Connectivity check passed - `$RequiredFileServer is reachable"
+
 # Run the batch file (runs every boot to keep in sync with source)
-Write-Host "Running CCH Rollout batch file (continuous validation/sync mode)..."
-Write-Host "This ensures the host stays in sync with `$RequiredFileServer and validates deployment."
-`$process = Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"`$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru
+Write-Log "Running CCH Rollout batch file (continuous validation/sync mode)..."
+Write-Log "This ensures the host stays in sync with `$RequiredFileServer and validates deployment."
+# Use full path to cmd.exe and ensure proper working directory
+`$cmdPath = `$env:ComSpec
+if (-not `$cmdPath) { `$cmdPath = "C:\Windows\System32\cmd.exe" }
+Write-Log "Using cmd.exe: `$cmdPath"
+Write-Log "Batch file: `$BatchFilePath"
+Write-Log "Working directory: C:\CCHAPPS"
+try {
+    `$process = Start-Process -FilePath `$cmdPath -ArgumentList "/c", "`"`$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru -ErrorAction Stop
+    Write-Log "Batch file process completed. Exit code: `$(`$process.ExitCode)"
+} catch {
+    Write-Log "ERROR: Failed to start batch file process: `$_"
+    exit 1
+}
 
 if (`$process.ExitCode -eq 0) {
-    Write-Host "CCH Rollout completed successfully. Host is validated and in sync with source."
+    Write-Log "SUCCESS: CCH Rollout completed successfully. Host is validated and in sync with source."
     exit 0
 }
 else {
-    Write-Warning "CCH Rollout completed with exit code: `$(`$process.ExitCode)"
-    Write-Warning "Task will retry on next boot."
+    Write-Log "WARNING: CCH Rollout completed with exit code: `$(`$process.ExitCode)"
+    Write-Log "Task will retry on next boot."
     exit `$process.ExitCode
 }
 "@
@@ -178,51 +216,90 @@ else {
             # Wrapper for "run once" mode - runs once then self-deletes
             $WrapperScript = @"
 # Wrapper script for CCH Rollout - runs once then self-deletes scheduled task
+`$LogFile = "C:\CCHAPPS\CCH-Rollout-Wrapper.log"
 `$TaskName = "$TaskName"
 `$BatchFilePath = "$BatchFilePath"
 `$CompletionFlagFile = "$CompletionFlagFile"
 `$RequiredFileServer = "$RequiredFileServer"
 
+# Function to write log with timestamp
+function Write-Log {
+    param([string]`$Message)
+    `$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    `$logMessage = "[`$timestamp] `$Message"
+    Add-Content -Path `$LogFile -Value `$logMessage -ErrorAction SilentlyContinue
+    Write-Host `$logMessage
+}
+
+# Start logging
+Write-Log "=== CCH Rollout Wrapper Started (Run Once Mode) ==="
+Write-Log "Batch file path: `$BatchFilePath"
+Write-Log "Required file server: `$RequiredFileServer"
+Write-Log "Completion flag file: `$CompletionFlagFile"
+
+# Ensure working directory exists
+Set-Location "C:\CCHAPPS" -ErrorAction SilentlyContinue
+Write-Log "Working directory: `$(Get-Location)"
+
+# Check if batch file exists
+if (-not (Test-Path `$BatchFilePath)) {
+    Write-Log "ERROR: Batch file not found at `$BatchFilePath"
+    exit 1
+}
+
 # Check if already completed
 if (Test-Path `$CompletionFlagFile) {
-    Write-Host "CCH Rollout already completed. Removing scheduled task..."
+    Write-Log "CCH Rollout already completed. Removing scheduled task..."
     `$task = Get-ScheduledTask -TaskName `$TaskName -ErrorAction SilentlyContinue
     if (`$task) {
         Unregister-ScheduledTask -TaskName `$TaskName -Confirm:`$false -ErrorAction SilentlyContinue
-        Write-Host "Scheduled task removed."
+        Write-Log "Scheduled task removed."
     }
     exit 0
 }
 
 # Check file server connectivity
-Write-Host "Checking connectivity to `$RequiredFileServer..."
+Write-Log "Checking connectivity to `$RequiredFileServer..."
 `$pingResult = Test-Connection -ComputerName `$RequiredFileServer -Count 2 -Quiet -ErrorAction SilentlyContinue
 if (-not `$pingResult) {
-    Write-Warning "`$RequiredFileServer is not reachable. Task will retry on next boot."
+    Write-Log "WARNING: `$RequiredFileServer is not reachable. Task will retry on next boot."
+    exit 1
+}
+Write-Log "Connectivity check passed - `$RequiredFileServer is reachable"
+
+# Run the batch file
+Write-Log "Running CCH Rollout batch file..."
+# Use full path to cmd.exe and ensure proper working directory
+`$cmdPath = `$env:ComSpec
+if (-not `$cmdPath) { `$cmdPath = "C:\Windows\System32\cmd.exe" }
+Write-Log "Using cmd.exe: `$cmdPath"
+Write-Log "Batch file: `$BatchFilePath"
+Write-Log "Working directory: C:\CCHAPPS"
+try {
+    `$process = Start-Process -FilePath `$cmdPath -ArgumentList "/c", "`"`$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru -ErrorAction Stop
+    Write-Log "Batch file process completed. Exit code: `$(`$process.ExitCode)"
+} catch {
+    Write-Log "ERROR: Failed to start batch file process: `$_"
     exit 1
 }
 
-# Run the batch file
-Write-Host "Running CCH Rollout batch file..."
-`$process = Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"`$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru
-
 if (`$process.ExitCode -eq 0) {
     # Success - create flag file and delete scheduled task
-    Write-Host "CCH Rollout completed successfully. Creating completion flag..."
+    Write-Log "SUCCESS: CCH Rollout completed successfully. Creating completion flag..."
     New-Item -Path `$CompletionFlagFile -ItemType File -Force | Out-Null
     Set-ItemProperty -Path `$CompletionFlagFile -Name LastWriteTime -Value (Get-Date) -ErrorAction SilentlyContinue
     
-    Write-Host "Removing scheduled task (rollout completed)..."
+    Write-Log "Removing scheduled task (rollout completed)..."
     `$task = Get-ScheduledTask -TaskName `$TaskName -ErrorAction SilentlyContinue
     if (`$task) {
         Unregister-ScheduledTask -TaskName `$TaskName -Confirm:`$false -ErrorAction SilentlyContinue
-        Write-Host "Scheduled task removed. Rollout will not run again."
+        Write-Log "Scheduled task removed. Rollout will not run again."
     }
     exit 0
 }
 else {
-    Write-Warning "CCH Rollout failed with exit code: `$(`$process.ExitCode)"
-    Write-Warning "Task will retry on next boot."
+    Write-Log "WARNING: CCH Rollout failed with exit code: `$(`$process.ExitCode)"
+    Write-Log "Task will retry on next boot."
     exit `$process.ExitCode
 }
 "@
@@ -230,6 +307,7 @@ else {
         
         # Save wrapper script to C:\CCHAPPS (permanent location)
         $WrapperScriptPath = "C:\CCHAPPS\CCH-Rollout-Wrapper.ps1"
+        $LogFilePath = "C:\CCHAPPS\CCH-Rollout-Wrapper.log"
         # Ensure CCHAPPS directory exists
         if (-not (Test-Path "C:\CCHAPPS")) {
             New-Item -Path "C:\CCHAPPS" -ItemType Directory -Force | Out-Null
@@ -237,7 +315,9 @@ else {
         $WrapperScript | Out-File -FilePath $WrapperScriptPath -Encoding UTF8 -Force
         
         # Create the action (run PowerShell wrapper script)
-        $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
+        # Use -File with full path - most reliable method for scheduled tasks
+        # Output is logged within the wrapper script itself
+        $Action = New-ScheduledTaskAction -Execute "powershell.exe" `
             -Argument "-ExecutionPolicy Bypass -NoProfile -File `"$WrapperScriptPath`"" `
             -WorkingDirectory "C:\CCHAPPS"
         
@@ -260,6 +340,8 @@ else {
         Write-Host "Scheduled task created successfully: $TaskName" -ForegroundColor Green
         Write-Host "The CCH rollout script will run automatically on next boot (5 minutes after startup)."
         Write-Host "Task will only run when network is available and can reach $RequiredFileServer."
+        Write-Host "Log file location: $LogFilePath" -ForegroundColor Cyan
+        Write-Host "Check the log file if the task does not run as expected." -ForegroundColor Cyan
         if ($RunOnEveryBoot) {
             Write-Host "IMPORTANT: The task will run on EVERY boot for continuous validation and sync with $RequiredFileServer." -ForegroundColor Cyan
             Write-Host "This ensures all hosts stay in sync and pick up updates automatically." -ForegroundColor Cyan
