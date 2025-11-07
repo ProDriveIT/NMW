@@ -187,14 +187,25 @@ Write-Log "Connectivity check passed - `$RequiredFileServer is reachable"
 # Run the batch file (runs every boot to keep in sync with source)
 Write-Log "Running CCH Rollout batch file (continuous validation/sync mode)..."
 Write-Log "This ensures the host stays in sync with `$RequiredFileServer and validates deployment."
+# Validate batch file path is not empty
+if ([string]::IsNullOrWhiteSpace(`$BatchFilePath)) {
+    Write-Log "ERROR: Batch file path is null or empty"
+    exit 1
+}
+
 # Use full path to cmd.exe and ensure proper working directory
 `$cmdPath = `$env:ComSpec
 if (-not `$cmdPath) { `$cmdPath = "C:\Windows\System32\cmd.exe" }
 Write-Log "Using cmd.exe: `$cmdPath"
 Write-Log "Batch file: `$BatchFilePath"
 Write-Log "Working directory: C:\CCHAPPS"
+
+# Construct command line arguments - ensure proper quoting
+`$batchFileQuoted = "`"`$BatchFilePath`""
+`$arguments = @("/c", `$batchFileQuoted)
+
 try {
-    `$process = Start-Process -FilePath `$cmdPath -ArgumentList "/c", "`"`$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru -ErrorAction Stop
+    `$process = Start-Process -FilePath `$cmdPath -ArgumentList `$arguments -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru -ErrorAction Stop
     Write-Log "Batch file process completed. Exit code: `$(`$process.ExitCode)"
 } catch {
     Write-Log "ERROR: Failed to start batch file process: `$_"
@@ -269,14 +280,25 @@ Write-Log "Connectivity check passed - `$RequiredFileServer is reachable"
 
 # Run the batch file
 Write-Log "Running CCH Rollout batch file..."
+# Validate batch file path is not empty
+if ([string]::IsNullOrWhiteSpace(`$BatchFilePath)) {
+    Write-Log "ERROR: Batch file path is null or empty"
+    exit 1
+}
+
 # Use full path to cmd.exe and ensure proper working directory
 `$cmdPath = `$env:ComSpec
 if (-not `$cmdPath) { `$cmdPath = "C:\Windows\System32\cmd.exe" }
 Write-Log "Using cmd.exe: `$cmdPath"
 Write-Log "Batch file: `$BatchFilePath"
 Write-Log "Working directory: C:\CCHAPPS"
+
+# Construct command line arguments - ensure proper quoting
+`$batchFileQuoted = "`"`$BatchFilePath`""
+`$arguments = @("/c", `$batchFileQuoted)
+
 try {
-    `$process = Start-Process -FilePath `$cmdPath -ArgumentList "/c", "`"`$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru -ErrorAction Stop
+    `$process = Start-Process -FilePath `$cmdPath -ArgumentList `$arguments -WorkingDirectory "C:\CCHAPPS" -Wait -NoNewWindow -PassThru -ErrorAction Stop
     Write-Log "Batch file process completed. Exit code: `$(`$process.ExitCode)"
 } catch {
     Write-Log "ERROR: Failed to start batch file process: `$_"
