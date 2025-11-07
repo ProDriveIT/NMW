@@ -260,15 +260,23 @@ Click **+ Add your own script** and add the following scripts in order:
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/optimize-microsoft-edge.ps1`
    - Click **Save**
 
-4. **Install Google Chrome Per Machine**
+4. **Install Windows Package Manager (winget)**
+   - **Name**: `Install Windows Package Manager (winget)`
+   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-winget.ps1`
+   - Click **Save**
+   - **Note**: This should be added before Chrome and Adobe Reader scripts, as they use winget for installation.
+
+5. **Install Google Chrome Per Machine**
    - **Name**: `Install Google Chrome Per Machine`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-chrome-per-machine.ps1`
    - Click **Save**
+   - **Note**: Requires winget to be installed first (add script #4 above).
 
-5. **Install Adobe Reader Per Machine**
+6. **Install Adobe Reader Per Machine**
    - **Name**: `Install Adobe Reader Per Machine`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-adobe-reader-per-machine.ps1`
    - Click **Save**
+   - **Note**: Requires winget to be installed first (add script #4 above).
 
 **Note**: Scripts will execute in the order listed. Use **Move up** or **Move down** to reorder if needed.
 
@@ -777,8 +785,10 @@ Scripts are available in this repository:
 - `install-m365-apps.ps1` - Installs/updates Microsoft 365 Apps for Business (system-wide)
 - `install-onedrive-per-machine.ps1` - Installs OneDrive for all users (system-wide)
 - `optimize-microsoft-edge.ps1` - Configures Edge policies for optimized AVD performance
-- `install-chrome-per-machine.ps1` - Installs Google Chrome for all users (system-wide, sysprep-compatible)
-- `install-adobe-reader-per-machine.ps1` - Installs Adobe Acrobat Reader DC for all users (system-wide, sysprep-compatible)
+- `install-winget.ps1` - Installs Windows Package Manager (winget) if not already available
+- `install-chrome-per-machine.ps1` - Installs Google Chrome for all users using winget (system-wide, sysprep-compatible)
+- `install-adobe-reader-per-machine.ps1` - Installs Adobe Acrobat Reader DC for all users using winget (system-wide, sysprep-compatible)
+- `install-datto-rmm-stewart-co.ps1` - Installs Datto RMM agent for Stewart & Co client
 - And more scripts in `scripted-actions/custom-image-template-scripts/` directory
 
 ## Next Steps
