@@ -14,6 +14,10 @@
 
 ## Phase 2: FSLogix Storage Account Configuration
 
+> **Automation Available**: This phase can be automated using `setup-avd-live-infrastructure.ps1` script.
+> The script creates Premium storage account with 100GB Azure Files share, configures networking, and sets up permissions.
+> See script documentation for details.
+
 ### Storage Account Creation
 - [ ] Create Azure Storage Account for FSLogix profiles (e.g., `stavdprofiles`)
 - [ ] Select appropriate storage account SKU (Standard or Premium based on performance needs)
@@ -80,6 +84,10 @@
 ---
 
 ## Phase 4: Infrastructure Setup - Live/Production Environment
+
+> **Automation Available**: This phase can be automated using `setup-avd-live-infrastructure.ps1` script.
+> The script creates resource group, virtual network, subnet, NSG with AVD rules, and optionally creates security groups.
+> Run from `CIT Deployment` folder: `.\setup-avd-live-infrastructure.ps1`
 
 ### Resource Group Creation
 - [ ] Create production resource group (e.g., `rg-avd-prod`)
