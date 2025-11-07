@@ -134,10 +134,52 @@ try {
     }
     Write-Success "Logged in as: $($account.user.name)"
     
-    # Set default subscription if not provided
+    # Prompt for subscription if not provided
     if ([string]::IsNullOrWhiteSpace($SubscriptionId)) {
-        $SubscriptionId = $account.id
-        Write-Host "    Using current subscription: $($account.name)" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Available subscriptions:" -ForegroundColor Cyan
+        $subscriptions = az account list --output json | ConvertFrom-Json
+        $subscriptionList = @()
+        $index = 1
+        foreach ($sub in $subscriptions) {
+            $isCurrent = ($sub.id -eq $account.id)
+            $currentMarker = if ($isCurrent) { " (CURRENT)" } else { "" }
+            Write-Host "  $index. $($sub.name) - $($sub.id)$currentMarker" -ForegroundColor $(if ($isCurrent) { "Yellow" } else { "Gray" })
+            $subscriptionList += $sub
+            $index++
+        }
+        
+        Write-Host ""
+        Write-Host "Select subscription to use:" -ForegroundColor Yellow
+        Write-Host "  Enter number (1-$($subscriptions.Count)), subscription ID, or press Enter to use current subscription" -ForegroundColor Gray
+        $selection = Read-Host "Selection"
+        
+        if ([string]::IsNullOrWhiteSpace($selection)) {
+            # Use current subscription
+            $SubscriptionId = $account.id
+            $selectedSubscription = $account
+            Write-Host "  Using current subscription: $($account.name)" -ForegroundColor Yellow
+        }
+        elseif ($selection -match '^\d+$' -and [int]$selection -ge 1 -and [int]$selection -le $subscriptions.Count) {
+            # User selected by number
+            $selectedSubscription = $subscriptionList[[int]$selection - 1]
+            $SubscriptionId = $selectedSubscription.id
+            Write-Host "  Selected subscription: $($selectedSubscription.name)" -ForegroundColor Green
+        }
+        else {
+            # User entered subscription ID
+            $SubscriptionId = $selection
+            $selectedSubscription = $subscriptions | Where-Object { $_.id -eq $SubscriptionId }
+            if ($selectedSubscription) {
+                Write-Host "  Selected subscription: $($selectedSubscription.name)" -ForegroundColor Green
+            }
+            else {
+                Write-Host "  Using provided subscription ID: $SubscriptionId" -ForegroundColor Yellow
+            }
+        }
+    }
+    else {
+        Write-Host "    Using provided subscription ID: $SubscriptionId" -ForegroundColor Gray
     }
 }
 catch {
@@ -160,11 +202,35 @@ try {
     }
     
     Write-Success "Subscription accessible: $($subscription.name)"
+    Write-Host "    Subscription ID: $($subscription.id)" -ForegroundColor Gray
     
-    # Try to get location from subscription default
+    # Prompt for location if not explicitly set
+    Write-Host ""
+    Write-Host "Select Azure region for resources:" -ForegroundColor Cyan
     if ($subscription.defaultLocation) {
-        $Location = $subscription.defaultLocation
-        Write-Host "    Using subscription default location: $Location" -ForegroundColor Gray
+        Write-Host "  Press Enter to use subscription default: $($subscription.defaultLocation)" -ForegroundColor Gray
+        Write-Host "  Or enter a region name (e.g., uksouth, eastus, westus2)" -ForegroundColor Gray
+        $locationInput = Read-Host "Region"
+        
+        if ([string]::IsNullOrWhiteSpace($locationInput)) {
+            $Location = $subscription.defaultLocation
+            Write-Host "  Using subscription default location: $Location" -ForegroundColor Yellow
+        }
+        else {
+            $Location = $locationInput
+            Write-Host "  Using specified location: $Location" -ForegroundColor Green
+        }
+    }
+    else {
+        Write-Host "  Enter a region name (e.g., uksouth, eastus, westus2)" -ForegroundColor Yellow
+        $locationInput = Read-Host "Region"
+        if (-not [string]::IsNullOrWhiteSpace($locationInput)) {
+            $Location = $locationInput
+            Write-Host "  Using location: $Location" -ForegroundColor Green
+        }
+        else {
+            Write-Warning-Message "No location specified. Using default: $Location"
+        }
     }
 }
 catch {
@@ -251,6 +317,41 @@ catch {
 
 Write-Host ""
 Write-Success "All pre-flight checks passed!"
+Write-Host ""
+
+# ============================================================================
+# CONFIRMATION BEFORE DEPLOYMENT
+# ============================================================================
+
+Write-Host ""
+Write-Host "===========================================" -ForegroundColor White
+Write-Host "Deployment Summary" -ForegroundColor White
+Write-Host "===========================================" -ForegroundColor White
+Write-Host ""
+Write-Host "Resources will be created with the following configuration:" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  Subscription: $($subscription.name)" -ForegroundColor Yellow
+Write-Host "    ID: $SubscriptionId" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  Location: $Location" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "  Resource Group: $ResourceGroupName" -ForegroundColor Yellow
+Write-Host "  Managed Identity: $ManagedIdentityName" -ForegroundColor Yellow
+Write-Host "  Image Gallery: $GalleryName" -ForegroundColor Yellow
+Write-Host "  Image Definition: $GalleryImageDefinitionName" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "===========================================" -ForegroundColor White
+Write-Host ""
+
+$confirm = Read-Host "Proceed with deployment? (Y/N)"
+if ($confirm -ne 'Y' -and $confirm -ne 'y') {
+    Write-Host ""
+    Write-Host "Deployment cancelled by user." -ForegroundColor Yellow
+    exit 0
+}
+
+Write-Host ""
+Write-Host "Starting deployment..." -ForegroundColor Green
 Write-Host ""
 
 # ============================================================================
