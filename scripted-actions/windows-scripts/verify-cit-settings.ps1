@@ -67,13 +67,13 @@ foreach ($check in $allChecks) {
             
             # Handle optional checks (FSLogix, MDM)
             if ($check.Name -eq "FSLogix RoamIdentity" -and -not (Test-Path "HKLM:\SOFTWARE\FSLogix\Profiles")) {
-                Write-Host " ⚠ (FSLogix not installed, skipping)" -ForegroundColor Gray
+                Write-Host " [SKIP] (FSLogix not installed, skipping)" -ForegroundColor Gray
                 $skipped++
                 continue
             }
             
             if ($check.Name -eq "MDM AutoEnroll" -and -not (Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\MDM")) {
-                Write-Host " ⚠ (MDM not configured, skipping)" -ForegroundColor Gray
+                Write-Host " [SKIP] (MDM not configured, skipping)" -ForegroundColor Gray
                 $skipped++
                 continue
             }
@@ -81,36 +81,36 @@ foreach ($check in $allChecks) {
             if ($check.Expected -is [string] -and $check.Expected -like "*") {
                 # Pattern match
                 if ($actualValue -like $check.Expected) {
-                    Write-Host " ✓" -ForegroundColor Green
+                    Write-Host " [PASS]" -ForegroundColor Green
                     $passed++
                 } else {
-                    Write-Host " ✗ (Expected: $($check.Expected), Got: $actualValue)" -ForegroundColor Red
+                    Write-Host " [FAIL] (Expected: $($check.Expected), Got: $actualValue)" -ForegroundColor Red
                     $failed++
                 }
             } else {
                 # Exact match
                 if ($actualValue -eq $check.Expected) {
-                    Write-Host " ✓" -ForegroundColor Green
+                    Write-Host " [PASS]" -ForegroundColor Green
                     $passed++
                 } else {
-                    Write-Host " ✗ (Expected: $($check.Expected), Got: $actualValue)" -ForegroundColor Red
+                    Write-Host " [FAIL] (Expected: $($check.Expected), Got: $actualValue)" -ForegroundColor Red
                     $failed++
                 }
             }
         } else {
-            Write-Host " ✗ (Property not found)" -ForegroundColor Red
+            Write-Host " [FAIL] (Property not found)" -ForegroundColor Red
             $failed++
         }
     } else {
         # Check if this is an optional setting
         if ($check.Name -eq "FSLogix RoamIdentity" -or $check.Name -eq "FSLogix Tray") {
-            Write-Host " ⚠ (FSLogix not installed, skipping)" -ForegroundColor Gray
+            Write-Host " [SKIP] (FSLogix not installed, skipping)" -ForegroundColor Gray
             $skipped++
         } elseif ($check.Name -eq "MDM AutoEnroll") {
-            Write-Host " ⚠ (MDM not configured, skipping)" -ForegroundColor Gray
+            Write-Host " [SKIP] (MDM not configured, skipping)" -ForegroundColor Gray
             $skipped++
         } else {
-            Write-Host " ✗ (Path does not exist)" -ForegroundColor Red
+            Write-Host " [FAIL] (Path does not exist)" -ForegroundColor Red
             $failed++
         }
     }
@@ -127,10 +127,10 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
 if ($failed -eq 0) {
-    Write-Host "All required settings are configured correctly! ✓" -ForegroundColor Green
+    Write-Host "All required settings are configured correctly!" -ForegroundColor Green
 } else {
     Write-Host "Some settings are missing or incorrect. Please review the failed checks above." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "For detailed information, see: REGISTRY_VERIFICATION_GUIDE.md" -ForegroundColor Gray
+    Write-Host "For detailed information, see REGISTRY_VERIFICATION_GUIDE.md" -ForegroundColor Gray
 }
 
