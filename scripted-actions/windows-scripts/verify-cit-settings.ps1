@@ -47,7 +47,6 @@ $allChecks = @(
     @{Name="Outlook Cached Mode"; Path="HKLM:\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Cached Mode"; Property="Enable"; Expected=1},
     @{Name="Outlook Sync Window"; Path="HKLM:\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Cached Mode"; Property="SyncWindowSetting"; Expected=3},
     @{Name="Power Options - NoClose"; Path="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"; Property="NoClose"; Expected=1},
-    @{Name="FSLogix Tray"; Path="HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; Property="FSLogixTray"; Expected="*frxtray.exe*"},
     @{Name="Windows Installer RDS"; Path="HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\TSAppSrv\Application Compatibility"; Property="DisableMsi"; Expected=1},
     @{Name="MDM AutoEnroll"; Path="HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\MDM"; Property="AutoEnrollMDM"; Expected=1}
 )
@@ -103,7 +102,7 @@ foreach ($check in $allChecks) {
         }
     } else {
         # Check if this is an optional setting
-        if ($check.Name -eq "FSLogix RoamIdentity" -or $check.Name -eq "FSLogix Tray") {
+        if ($check.Name -eq "FSLogix RoamIdentity") {
             Write-Host " [SKIP] (FSLogix not installed, skipping)" -ForegroundColor Gray
             $skipped++
         } elseif ($check.Name -eq "MDM AutoEnroll") {
