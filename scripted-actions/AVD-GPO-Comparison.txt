@@ -1,0 +1,489 @@
+﻿================================================================================
+AVD GPO Settings Comparison
+Generated: 2025-11-10 14:44:29
+================================================================================
+
+--------------------------------------------------------------------------------
+GPO: AVD: System Optimizations
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Registry Settings:
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+  Extension: Extension
+  Extension: Extension
+    Policy Settings:
+      Allow time zone redirection: Enabled
+
+      Do not set default client printer to be default printer in a session: Enabled
+
+      Allow Cloud Search: Enabled
+
+      Allow Cortana: Disabled
+
+      Allow Cortana above lock screen: Disabled
+
+      Allow search and Cortana to use location: Disabled
+
+      Default excluded paths: Disabled
+
+      Default indexed paths: Disabled
+
+      Do not allow web search: Enabled
+
+      Don't search the web or display web results in Search: Enabled
+
+      Don't search the web or display web results in Search over metered connections: Enabled
+
+      Allow Windows Ink Workspace: Disabled
+
+User Configuration Settings:
+
+  Extension: Extension
+    Registry Settings:
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+  Extension: Extension
+    Policy Settings:
+      Enable mail logging (troubleshooting): Disabled
+
+      Intranet Sites: Include all network paths (UNCs): Enabled
+
+      Site to Zone Assignment List: Disabled
+
+      Show security warning for potentially unsafe files: Enabled
+
+
+--------------------------------------------------------------------------------
+GPO: AVD-CachedExchangeMode
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Policy Settings:
+      Configure user Group Policy loopback processing mode: Enabled
+
+User Configuration Settings:
+
+  Extension: Extension
+    Policy Settings:
+      RPC/HTTP Connection Flags: Enabled
+
+      Cached Exchange Mode (File | Cached Exchange Mode): Enabled
+
+      Cached Exchange Mode Sync Settings: Enabled
+
+      Download Public Folder Favorites: Disabled
+
+      Download shared non-mail folders: Enabled
+
+      Use Cached Exchange Mode for new and existing Outlook profiles: Enabled
+
+
+--------------------------------------------------------------------------------
+GPO: AVD-Turn Off Windows Installer RDS Compatibility
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Policy Settings:
+      Turn off Windows Installer RDS Compatibility: Enabled
+
+
+--------------------------------------------------------------------------------
+GPO: AVD-Profiles
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Policy Settings:
+      Delete local profile when FSLogix Profile should apply: Enabled
+
+      Enabled: Enabled
+
+      Set Outlook cached mode on successful container attach: Enabled
+
+      VHD location: Disabled
+
+      Swap directory name components: Enabled
+
+      Virtual disk type: Enabled
+
+      Run these programs at user logon: Enabled
+
+
+--------------------------------------------------------------------------------
+GPO: AVD-MEMEnrollment
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Registry Settings:
+      Key: 
+      Value:  = 
+
+  Extension: Extension
+    Policy Settings:
+      Enable automatic MDM enrollment using default Azure AD credentials: Enabled
+
+
+--------------------------------------------------------------------------------
+GPO: AVD-DesktopLockdown
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Policy Settings:
+      Configure user Group Policy loopback processing mode: Enabled
+
+      Set time limit for active but idle Remote Desktop Services sessions: Enabled
+
+      Set time limit for disconnected sessions: Enabled
+
+User Configuration Settings:
+
+  Extension: Extension
+    Policy Settings:
+      Enable screen saver: Enabled
+
+      Screen saver timeout: Enabled
+
+      Remove and prevent access to the Shut Down, Restart, Sleep, and Hibernate commands: Enabled
+
+      Prevent access to registry editing tools: Enabled
+
+      Hide these specified drives in My Computer: Enabled
+
+
+--------------------------------------------------------------------------------
+GPO: AVD-RegionalSettings
+--------------------------------------------------------------------------------
+
+Computer Configuration Settings:
+
+  Extension: Extension
+    Registry Settings:
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+User Configuration Settings:
+
+  Extension: Extension
+    Registry Settings:
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+      Key: 
+      Value:  = 
+
+
