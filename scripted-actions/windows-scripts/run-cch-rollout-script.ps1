@@ -50,7 +50,7 @@ $BatchFilePath = "C:\CCHAPPS\CCH_CENTRAL_RDS_Roll_Out-Update_Script.bat"
     # Remove existing task
     Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue | Unregister-ScheduledTask -Confirm:$false -ErrorAction SilentlyContinue
 
-    # Create task to run batch file - use wrapper batch file to avoid quote escaping issues
+    # Create task to run batch file - use schtasks.exe for maximum reliability
     # This script MUST NOT fail the build - if task creation fails, we continue anyway
     $TaskCreated = $false
 
@@ -72,20 +72,44 @@ echo. | call "C:\CCHAPPS\CCH_CENTRAL_RDS_Roll_Out-Update_Script.bat"
             Write-Host "  WARNING: Could not create wrapper batch file: $_" -ForegroundColor Yellow
         }
         
-        # Create scheduled task using wrapper batch file (no -Argument needed)
+        # Use schtasks.exe directly - most reliable method, no PowerShell cmdlet issues
         try {
-            $Action = New-ScheduledTaskAction -Execute $WrapperBatch -WorkingDirectory "C:\CCHAPPS" -ErrorAction Stop
-            $Trigger = New-ScheduledTaskTrigger -AtStartup -ErrorAction Stop
-            $Trigger.Delay = "PT5M"
-            $Principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest -ErrorAction Stop
-            $Settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 2) -ErrorAction Stop
+            # Delete existing task if it exists (ignore errors)
+            $null = schtasks.exe /Delete /TN $TaskName /F 2>&1
             
-            Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Principal $Principal -Settings $Settings -Description "Runs CCH Rollout batch file on startup (after domain join)" -Force -ErrorAction Stop | Out-Null
+            # Create task using schtasks.exe - this is the most reliable method
+            # /SC ONSTART = run at startup
+            # /RU SYSTEM = run as SYSTEM account
+            # /RL HIGHEST = run with highest privileges
+            # /TR = task to run (the wrapper batch file)
+            # /DELAY = delay 5 minutes after startup
+            $result = schtasks.exe /Create /TN $TaskName /TR "`"$WrapperBatch`"" /SC ONSTART /RU SYSTEM /RL HIGHEST /DELAY PT5M /F 2>&1
             
-            $TaskCreated = $true
-            Write-Host "  Scheduled task created: $TaskName" -ForegroundColor Green
-            Write-Host "  Task will run 5 minutes after system startup" -ForegroundColor Gray
-            Write-Host "  Task will only run when network is available" -ForegroundColor Gray
+            if ($LASTEXITCODE -eq 0) {
+                # Configure additional settings using PowerShell (network requirement, time limit)
+                try {
+                    $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+                    if ($task) {
+                        $task.Settings.StartWhenAvailable = $true
+                        $task.Settings.RunOnlyIfNetworkAvailable = $true
+                        $task.Settings.ExecutionTimeLimit = New-TimeSpan -Hours 2
+                        $task.Description = "Runs CCH Rollout batch file on startup (after domain join)"
+                        Set-ScheduledTask -TaskName $TaskName -InputObject $task -ErrorAction SilentlyContinue | Out-Null
+                    }
+                }
+                catch {
+                    # Settings update failed, but task was created - that's OK
+                    Write-Host "  NOTE: Task created but some settings could not be applied" -ForegroundColor Gray
+                }
+                
+                $TaskCreated = $true
+                Write-Host "  Scheduled task created: $TaskName" -ForegroundColor Green
+                Write-Host "  Task will run 5 minutes after system startup" -ForegroundColor Gray
+                Write-Host "  Task will only run when network is available" -ForegroundColor Gray
+            }
+            else {
+                throw "schtasks.exe returned exit code $LASTEXITCODE : $result"
+            }
         }
         catch {
             Write-Host "  WARNING: Failed to create scheduled task: $_" -ForegroundColor Yellow
