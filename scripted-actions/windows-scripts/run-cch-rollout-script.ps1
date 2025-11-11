@@ -50,7 +50,9 @@ Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue | Unregister
 # Create task to run batch file directly (echo. pipes Enter to handle pause)
 try {
     # Use cmd.exe to run batch file with echo. to handle pause commands
-    $Action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c", "cd /d C:\CCHAPPS && echo. | call `"$BatchFilePath`"" -WorkingDirectory "C:\CCHAPPS"
+    # Argument must be a single string, not an array
+    $Argument = "/c `"cd /d C:\CCHAPPS && echo. | call \`"$BatchFilePath\`"`""
+    $Action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument $Argument -WorkingDirectory "C:\CCHAPPS"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Trigger.Delay = "PT5M"
     $Principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
