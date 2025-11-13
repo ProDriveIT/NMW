@@ -111,26 +111,11 @@ if ($ChromeInstalled) {
     Write-Host "Google Chrome is already installed. Checking version..."
     $ExistingVersion = (Get-Item "C:\Program Files\Google\Chrome\Application\chrome.exe").VersionInfo.FileVersion
     Write-Host "Existing Chrome version: $ExistingVersion"
-    
-    # Uninstall existing Chrome using winget to ensure clean installation
-    Write-Host "Uninstalling existing version to ensure clean installation..."
-    try {
-        & $wingetCommand uninstall --id Google.Chrome --scope machine --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Null
-        Start-Sleep -Seconds 5
-        
-        # Wait for uninstall to complete
-        $maxWait = 30
-        $waitCount = 0
-        while ($waitCount -lt $maxWait -and (Test-Path "C:\Program Files\Google\Chrome\Application\chrome.exe")) {
-            Start-Sleep -Seconds 2
-            $waitCount += 2
-        }
-        Write-Host "Uninstall completed."
-    }
-    catch {
-        Write-Warning "Failed to uninstall existing Chrome via winget: $_"
-        Write-Warning "Attempting to continue with installation..."
-    }
+    Write-Host "Chrome is already installed system-wide. Skipping installation to avoid conflicts."
+    Write-Host "Verification: Chrome is installed system-wide (Program Files) - compatible with sysprep."
+    Write-Host "Google Chrome installation skipped - already present."
+    Write-Host "Chrome is installed system-wide and ready for sysprep."
+    exit 0
 }
 
 # Install Chrome using winget with machine-wide scope
