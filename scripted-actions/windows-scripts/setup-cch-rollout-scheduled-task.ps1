@@ -45,11 +45,17 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false)]
-    [string]$DomainAccount = $env:CCH_DOMAIN_ACCOUNT,
+    [string]$DomainAccount = if ($env:CCH_DOMAIN_ACCOUNT) { $env:CCH_DOMAIN_ACCOUNT } else { "svc_cch_avd" },
     
     [Parameter(Mandatory = $false)]
-    [string]$DomainPassword = $env:CCH_DOMAIN_PASSWORD
+    [string]$DomainPassword = if ($env:CCH_DOMAIN_PASSWORD) { $env:CCH_DOMAIN_PASSWORD } else { "Pure-Gold-Ape" }
 )
+
+# SECURITY WARNING: Default credentials are hardcoded for convenience during CIT deployment.
+# For production, prefer using environment variables:
+#   $env:CCH_DOMAIN_ACCOUNT = "svc_cch_avd"
+#   $env:CCH_DOMAIN_PASSWORD = "Pure-Gold-Ape"
+# Or pass credentials as parameters when calling the script.
 
 # Set error action to Continue so errors don't stop execution during CIT
 $ErrorActionPreference = 'Continue'
