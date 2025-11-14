@@ -77,33 +77,120 @@ if ((Get-ItemProperty -Path $KeyPath -Name 'MdmComplianceUrl' -ErrorAction Silen
     Write-Log "Registry setting 'MdmComplianceUrl' already exists and matches."
 }
 
+# Check if device is domain joined
+try {
+    $dsregStatus = dsregcmd /status 2>&1
+    $domainJoinedMatch = $dsregStatus | Select-String "DomainJoined"
+    if ($domainJoinedMatch) {
+        $domainJoined = $domainJoinedMatch.ToString().Split(':')[1].Trim()
+    } else {
+        # If we can't parse the output, assume not domain joined (build time)
+        Write-Log "Could not determine domain join status. Assuming build time (not domain joined)."
+        $domainJoined = "NO"
+    }
+} catch {
+    # If dsregcmd fails, assume not domain joined (build time)
+    Write-Log "Error checking domain join status: $_. Assuming build time (not domain joined)."
+    $domainJoined = "NO"
+}
+
+# If NOT domain joined (during build), create scheduled task and exit
+if ($domainJoined -eq "NO") {
+    Write-Log "Device is not domain joined (build time). Creating scheduled task to run enrollment check after domain join..."
+    
+    $TaskName = "Cheesman-MDM-Enrollment"
+    $ScriptPath = $PSCommandPath
+    
+    # Remove existing task if it exists
+    $existingTask = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+    if ($existingTask) {
+        Write-Log "Removing existing scheduled task..."
+        Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
+    }
+    
+    # Create scheduled task action
+    $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
+        -Argument "-ExecutionPolicy Bypass -File `"$ScriptPath`""
+    
+    # Create trigger - run at startup with 5 minute delay
+    $Trigger = New-ScheduledTaskTrigger -AtStartup
+    $Trigger.Delay = New-TimeSpan -Minutes 5
+    
+    # Create settings
+    $Settings = New-ScheduledTaskSettingsSet `
+        -AllowStartIfOnBatteries `
+        -DontStopIfGoingOnBatteries `
+        -StartWhenAvailable `
+        -RunOnlyIfNetworkAvailable `
+        -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
+        -RestartCount 3 `
+        -RestartInterval (New-TimeSpan -Minutes 1)
+    
+    # Create principal - run as SYSTEM
+    $Principal = New-ScheduledTaskPrincipal `
+        -UserId "SYSTEM" `
+        -LogonType ServiceAccount `
+        -RunLevel Highest
+    
+    # Register the scheduled task
+    try {
+        Register-ScheduledTask `
+            -TaskName $TaskName `
+            -Action $Action `
+            -Trigger $Trigger `
+            -Settings $Settings `
+            -Principal $Principal `
+            -Description "Cheesman MDM Enrollment - Runs after domain join to check Entra Hybrid Join status" `
+            -ErrorAction Stop
+        
+        Write-Log "Scheduled task '$TaskName' created successfully. Task will run 5 minutes after startup (post-domain-join)."
+        Write-Log "Script exiting - enrollment check will run via scheduled task after domain join."
+        exit 0
+    }
+    catch {
+        Write-Log "WARNING: Failed to create scheduled task: $_"
+        Write-Log "The enrollment check will not run automatically. Manual intervention may be required."
+        exit 1
+    }
+}
+
+# If domain joined, continue with enrollment check logic
+Write-Log "Device is domain joined. Running enrollment check logic..."
 
 # Check if the registry key and value exist
 if ((Test-Path $rebootPath) -and (Get-ItemProperty -Path $rebootPath -Name $rebootValueName -ErrorAction SilentlyContinue)) {
     Write-Log "Reboot already performed. Skipping reboot logic."
 
-    # Check for Event ID 72 in a loop
+    # Check for Event ID 72 in a loop (with max retry limit)
     Write-Log "Checking for Event ID 72 to verify enrollment..."
-    while ($true) {
+    $maxRetries = 120  # 120 attempts * 30 seconds = 60 minutes max
+    $retryCount = 0
+    while ($retryCount -lt $maxRetries) {
+        $retryCount++
         $eventlog = Get-WinEvent -LogName "Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider/Enrollment" -FilterXPath "*[System[(EventID=72)]]" -MaxEvents 1 -ErrorAction SilentlyContinue
 
         if ($eventlog) {
             Write-Log "Event ID 72 detected in Event Viewer. Enrollment successful."
             break
         } else {
-            Write-Log "Event ID 72 not found. Retrying..."
+            Write-Log "Event ID 72 not found. Retrying... (Attempt $retryCount/$maxRetries)"
             Start-Sleep 30
         }
     }
-
-    Write-Log "Script completed. Enrollment process completed. Verify in the Intune portal."
+    
+    if ($retryCount -ge $maxRetries) {
+        Write-Log "WARNING: Maximum retry limit reached. Event ID 72 not detected. Please verify enrollment manually in the Intune portal."
+    } else {
+        Write-Log "Script completed. Enrollment process completed. Verify in the Intune portal."
+    }
 
 } else {
-    # Loop to check Entra Hybrid Join status
+    # Loop to check Entra Hybrid Join status (with max retry limit)
+    $maxAttempts = 120  # 120 attempts * 30 seconds = 60 minutes max
     $attemptCount = 0
-    while ($true) {
+    while ($attemptCount -lt $maxAttempts) {
         $attemptCount++
-        Write-Log "Checking Entra Hybrid Join status... Attempt $attemptCount"
+        Write-Log "Checking Entra Hybrid Join status... Attempt $attemptCount/$maxAttempts"
 
         $dsreg = dsregcmd /status
 
@@ -140,6 +227,11 @@ if ((Test-Path $rebootPath) -and (Get-ItemProperty -Path $rebootPath -Name $rebo
 
         Start-Sleep 30
         Write-Log "Retrying Entra Hybrid Join status check..."
+    }
+    
+    if ($attemptCount -ge $maxAttempts) {
+        Write-Log "WARNING: Maximum retry limit reached ($maxAttempts attempts). Entra Hybrid Join check stopped."
+        Write-Log "Please verify domain join and Entra Hybrid Join status manually."
     }
 }
 
