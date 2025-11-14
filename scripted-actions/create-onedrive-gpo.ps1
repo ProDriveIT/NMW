@@ -67,30 +67,53 @@ try {
 
 # Determine script path
 if ([string]::IsNullOrEmpty($ScriptPath)) {
-    # Try to find script in windows-scripts subdirectory (relative to this script)
-    $windowsScriptsPath = Join-Path $PSScriptRoot "windows-scripts\configure-onedrive-gpo-settings.ps1"
-    if (Test-Path $windowsScriptsPath) {
-        $ScriptPath = $windowsScriptsPath
-        Write-Host "Found script in windows-scripts directory: $ScriptPath" -ForegroundColor Gray
-    } else {
-        # Try current directory
-        $currentScript = Join-Path $PSScriptRoot "configure-onedrive-gpo-settings.ps1"
-        if (Test-Path $currentScript) {
-            $ScriptPath = $currentScript
-            Write-Host "Found script in current directory: $ScriptPath" -ForegroundColor Gray
+    $scriptName = "configure-onedrive-gpo-settings.ps1"
+    $searchPaths = @()
+    
+    # 1. Try windows-scripts subdirectory (relative to this script)
+    $windowsScriptsPath = Join-Path $PSScriptRoot "windows-scripts\$scriptName"
+    $searchPaths += $windowsScriptsPath
+    
+    # 2. Try scripted-actions\windows-scripts (if running from repo root)
+    $repoPath = Join-Path $PSScriptRoot "scripted-actions\windows-scripts\$scriptName"
+    $searchPaths += $repoPath
+    
+    # 3. Try current directory
+    $currentScript = Join-Path $PSScriptRoot $scriptName
+    $searchPaths += $currentScript
+    
+    # 4. Try current working directory
+    $cwdScript = Join-Path (Get-Location).Path $scriptName
+    $searchPaths += $cwdScript
+    
+    # 5. Try NETLOGON share
+    $domain = $env:USERDNSDOMAIN
+    if ($domain) {
+        $netlogonPath = "\\$domain\NETLOGON\Scripts\$scriptName"
+        $searchPaths += $netlogonPath
+    }
+    
+    # Search all paths
+    foreach ($path in $searchPaths) {
+        if (Test-Path $path) {
+            $ScriptPath = (Resolve-Path $path).Path
+            Write-Host "Found script at: $ScriptPath" -ForegroundColor Green
+            break
+        }
+    }
+    
+    # If still not found, use default NETLOGON path
+    if ([string]::IsNullOrEmpty($ScriptPath)) {
+        Write-Warning "Script not found in common locations. Please specify -ScriptPath parameter."
+        Write-Host "Searched locations:" -ForegroundColor Yellow
+        $searchPaths | ForEach-Object { Write-Host "  $_" -ForegroundColor Gray }
+        if ($domain) {
+            $ScriptPath = "\\$domain\NETLOGON\Scripts\$scriptName"
+            Write-Host "`nUsing default path: $ScriptPath" -ForegroundColor Yellow
+            Write-Host "Note: Script will be copied to GPO folder, but source should be accessible." -ForegroundColor Yellow
         } else {
-            # Try NETLOGON share
-            $domain = $env:USERDNSDOMAIN
-            $netlogonPath = "\\$domain\NETLOGON\Scripts\configure-onedrive-gpo-settings.ps1"
-            if (Test-Path $netlogonPath) {
-                $ScriptPath = $netlogonPath
-                Write-Host "Found script in NETLOGON: $ScriptPath" -ForegroundColor Gray
-            } else {
-                Write-Warning "Script not found. Please specify -ScriptPath parameter or copy configure-onedrive-gpo-settings.ps1 to NETLOGON\Scripts\"
-                $ScriptPath = "\\$domain\NETLOGON\Scripts\configure-onedrive-gpo-settings.ps1"
-                Write-Host "Using default path: $ScriptPath" -ForegroundColor Yellow
-                Write-Host "Note: Script will be copied to GPO folder, but source should be accessible." -ForegroundColor Yellow
-            }
+            Write-Error "Could not determine domain. Please specify -ScriptPath parameter."
+            exit 1
         }
     }
 }

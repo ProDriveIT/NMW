@@ -212,6 +212,131 @@ $tenantId = "NEW-TENANT-ID-HERE"  # Client Name Tenant
 
 ---
 
+## Step 4: Add User Logon Script (Recommended)
+
+**Important:** Add a user logon script to ensure OneDrive works correctly after FSLogix profile load.
+
+The user logon script (`configure-onedrive-user-logon.ps1`) runs **AFTER** the FSLogix profile is loaded and:
+- Sets `Timerautomount` registry value (fixes SharePoint sync issues)
+- Ensures OneDrive starts properly
+- Does NOT interfere with profile loading
+
+### Add User Logon Script to GPO
+
+Run the following script on your Domain Controller:
+
+```powershell
+.\add-onedrive-user-logon-script.ps1
+```
+
+Or manually add it in GPO Editor:
+1. Open GPO Editor for "AVD - OneDrive & SharePoint Settings"
+2. Navigate to: **User Configuration > Policies > Windows Settings > Scripts > Logon**
+3. Click **Add...**
+4. Browse to: `\\domain.com\SYSVOL\domain.com\Policies\{GPO-ID}\User\Scripts\Logon\configure-onedrive-user-logon.ps1`
+5. Click **OK**
+
+**Why two scripts?**
+- **Startup Script** (Computer): Sets machine-level policies (runs at boot, before login)
+- **Logon Script** (User): Sets user-level settings like `Timerautomount` (runs after profile load)
+
+---
+
+## Step 5: Add User Logoff Script (Recommended)
+
+**Important:** Add a user logoff script to prevent FSLogix logout hangs.
+
+The user logoff script (`configure-onedrive-user-logoff.ps1`) runs **BEFORE** FSLogix profile unload and:
+- Stops OneDrive sync to release file handles
+- Closes OneDrive gracefully
+- Prevents profile unmount hangs during logout
+
+### Add User Logoff Script to GPO
+
+Run the following script on your Domain Controller:
+
+```powershell
+.\add-onedrive-user-logoff-script.ps1
+```
+
+Or manually add it in GPO Editor:
+1. Open GPO Editor for "AVD - OneDrive & SharePoint Settings"
+2. Navigate to: **User Configuration > Policies > Windows Settings > Scripts > Logoff**
+3. Click **Add...**
+4. Browse to: `\\domain.com\SYSVOL\domain.com\Policies\{GPO-ID}\User\Scripts\Logoff\configure-onedrive-user-logoff.ps1`
+5. Click **OK**
+
+**Complete script setup:**
+- **Startup Script** (Computer): Sets policies at boot
+- **Logon Script** (User): Configures OneDrive after profile load
+- **Logoff Script** (User): Closes OneDrive before profile unload
+
+---
+
+## Troubleshooting FSLogix Login/Logout Hangs
+
+### Issue: "Please wait for the FSLogix Apps Services" screen hangs during LOGIN
+
+**Cause:** OneDrive trying to auto-mount SharePoint sites during profile load.
+
+**Solution:**
+1. ✅ **AutoMountTeamSites is disabled by default** in the updated script (prevents hangs)
+2. ✅ **User logon script** sets `Timerautomount` AFTER profile load (enables sync safely)
+3. Users can manually sync SharePoint sites after login
+
+### Issue: "Please wait for the FSLogix Apps Services" screen hangs during LOGOUT
+
+**Cause:** OneDrive has open file handles or is syncing files, preventing profile VHDX unmount.
+
+**Solution:**
+1. ✅ **User logoff script** closes OneDrive gracefully BEFORE profile unload
+2. ✅ Stops OneDrive sync to release file handles
+3. ✅ Ensures FSLogix can unmount profile without hanging
+
+**If you still have issues:**
+```powershell
+# First, diagnose the actual cause:
+.\Diagnose-FSLogix-Hang.ps1
+
+# Then, if OneDrive is the issue, temporarily disable OneDrive settings:
+.\Disable-OneDrive-GPO-Temporarily.ps1
+
+# Test login/logout. If it works, OneDrive was the issue.
+```
+
+### Other Common Causes of FSLogix Hangs
+
+**Not all hangs are caused by OneDrive!** Other common causes:
+
+1. **Network connectivity issues**
+   - Azure Files share unreachable
+   - Firewall blocking SMB ports
+   - DNS resolution problems
+
+2. **FSLogix service issues**
+   - Service stopped or hung
+   - Profile path misconfigured
+   - VHDX corruption
+
+3. **Profile size issues**
+   - Profile VHDX too large
+   - Disk space full
+   - Azure Files quota exceeded
+
+4. **Other applications**
+   - Antivirus scanning profile
+   - Backup software accessing files
+   - Other apps with open file handles
+
+5. **Startup/logon scripts**
+   - Scripts hanging during execution
+   - Scripts waiting for network/resources
+   - Scripts with infinite loops
+
+**Always diagnose first before assuming OneDrive is the cause!**
+
+---
+
 ## Additional Resources
 
 - [OneDrive Group Policy Settings](https://learn.microsoft.com/en-us/sharepoint/use-group-policy)
