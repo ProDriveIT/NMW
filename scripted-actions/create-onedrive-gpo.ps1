@@ -67,23 +67,30 @@ try {
 
 # Determine script path
 if ([string]::IsNullOrEmpty($ScriptPath)) {
-    # Try to find script in current directory
-    $currentScript = Join-Path $PSScriptRoot "configure-onedrive-gpo-settings.ps1"
-    if (Test-Path $currentScript) {
-        $ScriptPath = $currentScript
-        Write-Host "Found script in current directory: $ScriptPath" -ForegroundColor Gray
+    # Try to find script in windows-scripts subdirectory (relative to this script)
+    $windowsScriptsPath = Join-Path $PSScriptRoot "windows-scripts\configure-onedrive-gpo-settings.ps1"
+    if (Test-Path $windowsScriptsPath) {
+        $ScriptPath = $windowsScriptsPath
+        Write-Host "Found script in windows-scripts directory: $ScriptPath" -ForegroundColor Gray
     } else {
-        # Try NETLOGON share
-        $domain = $env:USERDNSDOMAIN
-        $netlogonPath = "\\$domain\NETLOGON\Scripts\configure-onedrive-gpo-settings.ps1"
-        if (Test-Path $netlogonPath) {
-            $ScriptPath = $netlogonPath
-            Write-Host "Found script in NETLOGON: $ScriptPath" -ForegroundColor Gray
+        # Try current directory
+        $currentScript = Join-Path $PSScriptRoot "configure-onedrive-gpo-settings.ps1"
+        if (Test-Path $currentScript) {
+            $ScriptPath = $currentScript
+            Write-Host "Found script in current directory: $ScriptPath" -ForegroundColor Gray
         } else {
-            Write-Warning "Script not found. Please specify -ScriptPath parameter or copy configure-onedrive-gpo-settings.ps1 to NETLOGON\Scripts\"
-            $ScriptPath = "\\$domain\NETLOGON\Scripts\configure-onedrive-gpo-settings.ps1"
-            Write-Host "Using default path: $ScriptPath" -ForegroundColor Yellow
-            Write-Host "Note: Script will be copied to GPO folder, but source should be accessible." -ForegroundColor Yellow
+            # Try NETLOGON share
+            $domain = $env:USERDNSDOMAIN
+            $netlogonPath = "\\$domain\NETLOGON\Scripts\configure-onedrive-gpo-settings.ps1"
+            if (Test-Path $netlogonPath) {
+                $ScriptPath = $netlogonPath
+                Write-Host "Found script in NETLOGON: $ScriptPath" -ForegroundColor Gray
+            } else {
+                Write-Warning "Script not found. Please specify -ScriptPath parameter or copy configure-onedrive-gpo-settings.ps1 to NETLOGON\Scripts\"
+                $ScriptPath = "\\$domain\NETLOGON\Scripts\configure-onedrive-gpo-settings.ps1"
+                Write-Host "Using default path: $ScriptPath" -ForegroundColor Yellow
+                Write-Host "Note: Script will be copied to GPO folder, but source should be accessible." -ForegroundColor Yellow
+            }
         }
     }
 }

@@ -34,8 +34,14 @@ if (-not $isAdmin) {
     exit 1
 }
 
-# Tenant ID (Cheesman)
-$tenantId = "2106f27c-fb2e-4787-b960-3dc6aac54826"
+# ============================================================================
+# CONFIGURATION: Tenant ID
+# ============================================================================
+# MODIFY THIS VALUE FOR EACH CLIENT
+# Get tenant ID from: Azure Portal > Azure Active Directory > Overview > Tenant ID
+# ============================================================================
+$tenantId = "2106f27c-fb2e-4787-b960-3dc6aac54826"  # Cheesman Tenant - CHANGE THIS FOR OTHER CLIENTS
+# ============================================================================
 
 # Base registry path for OneDrive policies
 $oneDrivePolicyPath = "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive"
