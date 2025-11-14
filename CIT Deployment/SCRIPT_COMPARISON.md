@@ -4,21 +4,16 @@ This document compares scripts listed in the CIT guide with scripts available in
 
 ## Scripts Listed in CIT Guide (Should be in Template)
 
-### Currently in Guide (13 scripts):
+### Currently in Guide (8 scripts):
 
 1. ✅ `install-m365-apps.ps1`
 2. ✅ `install-onedrive-per-machine.ps1`
-3. ✅ `configure-outlook-cached-mode.ps1`
-4. ✅ `enable-mdm-enrollment.ps1`
-5. ✅ `configure-fslogix-tray-startup.ps1`
-6. ✅ `install-fslogix-status-to-pd-scripts.ps1` (NEW - just added)
-7. ✅ `configure-windows-installer-rds-compatibility.ps1`
-8. ✅ `disable-power-options.ps1`
-9. ✅ `optimize-microsoft-edge.ps1`
-10. ✅ `install-winget.ps1`
-11. ✅ `install-chrome-per-machine.ps1`
-12. ✅ `install-adobe-reader-per-machine.ps1`
-13. ✅ `install-datto-rmm-stewart-co.ps1`
+3. ✅ `install-powershell7.ps1`
+4. ✅ `install-fslogix-status-to-pd-scripts.ps1`
+5. ✅ `optimize-microsoft-edge.ps1`
+6. ✅ `install-winget.ps1`
+7. ✅ `install-chrome-per-machine.ps1`
+8. ✅ `install-adobe-reader-per-machine.ps1`
 
 ### Mentioned in Reference Section (but not in template steps):
 
@@ -28,73 +23,63 @@ This document compares scripts listed in the CIT guide with scripts available in
 
 ## Scripts in windows-scripts/ Folder (32 total)
 
-### ✅ Already in CIT Guide (13 scripts):
+### ✅ Already in CIT Guide (8 scripts):
 1. `install-m365-apps.ps1`
 2. `install-onedrive-per-machine.ps1`
-3. `configure-outlook-cached-mode.ps1`
-4. `enable-mdm-enrollment.ps1`
-5. `configure-fslogix-tray-startup.ps1`
-6. `install-fslogix-status-to-pd-scripts.ps1` ⭐ NEW
-7. `configure-windows-installer-rds-compatibility.ps1`
-8. `disable-power-options.ps1`
-9. `optimize-microsoft-edge.ps1`
-10. `install-winget.ps1`
-11. `install-chrome-per-machine.ps1`
-12. `install-adobe-reader-per-machine.ps1`
-13. `install-datto-rmm-stewart-co.ps1`
+3. `install-powershell7.ps1`
+4. `install-fslogix-status-to-pd-scripts.ps1`
+5. `optimize-microsoft-edge.ps1`
+6. `install-winget.ps1`
+7. `install-chrome-per-machine.ps1`
+8. `install-adobe-reader-per-machine.ps1`
 
-### ❌ NOT in CIT Guide (19 scripts):
+### ❌ NOT in CIT Guide (23 scripts):
 
 #### **Should Consider Adding:**
 
-1. **`install-powershell7.ps1`** ⭐ **RECOMMENDED**
-   - **Why**: FSLogix Status script requires PowerShell 7.2+
-   - **When**: Add BEFORE `install-fslogix-status-to-pd-scripts.ps1`
-   - **Priority**: High - Required dependency
-
-2. **`enable-screen-capture-protection.ps1`** ⭐ **RECOMMENDED**
+1. **`enable-screen-capture-protection.ps1`** ⭐ **RECOMMENDED**
    - **Why**: Security feature for AVD - prevents screen capture/recording
    - **When**: Add after domain join/MDM enrollment
    - **Priority**: Medium-High - Security best practice
 
-3. **`install-microsoft-teams-new.ps1`** ⚠️ **CONDITIONAL**
+2. **`install-microsoft-teams-new.ps1`** ⚠️ **CONDITIONAL**
    - **Why**: Built-in script installs Teams, but this might be newer version
    - **When**: Check if built-in script is sufficient
    - **Priority**: Low - Built-in script may be enough
 
-4. **`configure-onedrive-gpo-settings.ps1`** ⚠️ **CONDITIONAL**
+3. **`configure-onedrive-gpo-settings.ps1`** ⚠️ **CONDITIONAL**
    - **Why**: Alternative to Intune for OneDrive settings
    - **When**: Only if NOT using Intune
    - **Priority**: Low - Intune is preferred method
 
 #### **Client-Specific (Add as needed):**
 
-5. **`install-datto-rmm-cheesmans.ps1`**
+4. **`install-datto-rmm-cheesmans.ps1`**
    - **Why**: Client-specific Datto RMM agent
-   - **When**: For Cheesman client deployments
-   - **Priority**: Client-specific
+   - **When**: Deployed via GPO (not CIT) to avoid creating rogue VMs during build
+   - **Priority**: N/A - Deploy via GPO instead
 
-6. **`install-firefox-per-machine.ps1`**
+5. **`install-firefox-per-machine.ps1`**
    - **Why**: Installs Firefox browser
    - **When**: If client requires Firefox
    - **Priority**: Client-specific
 
-7. **`install-lastpass-per-machine.ps1`**
+6. **`install-lastpass-per-machine.ps1`**
    - **Why**: Installs LastPass password manager
    - **When**: If client requires LastPass
    - **Priority**: Client-specific
 
-8. **`install-onvio-link-per-machine.ps1`**
+7. **`install-onvio-link-per-machine.ps1`**
    - **Why**: Installs Onvio Link application
    - **When**: If client requires Onvio
    - **Priority**: Client-specific
 
-9. **`install-sage50-accounts.ps1`**
+8. **`install-sage50-accounts.ps1`**
    - **Why**: Installs Sage 50 Accounts
    - **When**: If client requires Sage
    - **Priority**: Client-specific
 
-10. **`install-xerox-workplace-cloud-client.ps1`**
+9. **`install-xerox-workplace-cloud-client.ps1`**
     - **Why**: Installs Xerox Workplace Cloud client
     - **When**: If client requires Xerox printing solution
     - **Priority**: Client-specific
@@ -121,52 +106,47 @@ This document compares scripts listed in the CIT guide with scripts available in
     - **When**: Run manually for analysis
     - **Priority**: N/A - Not for CIT
 
-15. **`install-fslogix-status-script.ps1`**
-    - **Why**: Installs to Program Files (we use `install-fslogix-status-to-pd-scripts.ps1` instead)
-    - **When**: Not needed - replaced by PD-Scripts version
-    - **Priority**: N/A - Superseded
-
-16. **`install-interactive-checklist-shortcut.ps1`**
+15. **`install-interactive-checklist-shortcut.ps1`**
     - **Why**: Client-specific shortcut creation
     - **When**: If client requires interactive checklist
     - **Priority**: Client-specific
 
-17. **`join-domain.ps1`**
+16. **`join-domain.ps1`**
     - **Why**: Domain join script
     - **When**: Handled by Azure Image Builder built-in action
     - **Priority**: N/A - Built-in handles this
 
-18. **`pin-apps-to-taskbar-all-users.ps1`**
+17. **`pin-apps-to-taskbar-all-users.ps1`**
     - **Why**: Pins apps to taskbar
     - **When**: If client requires specific taskbar pins
     - **Priority**: Client-specific
 
-19. **`run-cch-rollout-script.ps1`**
+18. **`run-cch-rollout-script.ps1`**
     - **Why**: Client-specific CCH rollout
     - **When**: For CCH client deployments
     - **Priority**: Client-specific
 
-20. **`setup-cch-rollout-scheduled-task.ps1`**
+19. **`setup-cch-rollout-scheduled-task.ps1`**
     - **Why**: Sets up CCH scheduled task
     - **When**: For CCH client deployments
     - **Priority**: Client-specific
 
-21. **`upload-cch-apps.ps1`**
+20. **`upload-cch-apps.ps1`**
     - **Why**: Uploads CCH apps
     - **When**: For CCH client deployments
     - **Priority**: Client-specific
 
-22. **`upload-folder-to-c-drive.ps1`**
+21. **`upload-folder-to-c-drive.ps1`**
     - **Why**: Utility to upload folders
     - **When**: Client-specific use case
     - **Priority**: Client-specific
 
-23. **`verify-cit-settings.ps1`**
+22. **`verify-cit-settings.ps1`**
     - **Why**: Verification script
     - **When**: Run manually after build
     - **Priority**: N/A - Not for CIT
 
-24. **`Autopilot2_OnboardingScript.ps1`**
+23. **`Autopilot2_OnboardingScript.ps1`**
     - **Why**: Autopilot onboarding
     - **When**: Not applicable to AVD CIT
     - **Priority**: N/A - Not for AVD
@@ -196,7 +176,6 @@ This document compares scripts listed in the CIT guide with scripts available in
 
 ### 📋 **Client-Specific - Add as Needed:**
 
-- `install-datto-rmm-cheesmans.ps1` (for Cheesman client)
 - `install-firefox-per-machine.ps1` (if Firefox needed)
 - `install-lastpass-per-machine.ps1` (if LastPass needed)
 - `install-onvio-link-per-machine.ps1` (if Onvio needed)
@@ -209,26 +188,32 @@ This document compares scripts listed in the CIT guide with scripts available in
 
 - Analysis/debugging scripts (`analyze-*`, `check-*`, `compare-*`, `verify-*`)
 - Post-build scripts (`cheesman-enrollment.ps1`)
-- Superseded scripts (`install-fslogix-status-script.ps1`)
 - Autopilot scripts (not applicable to AVD)
+- Datto RMM scripts (`install-datto-rmm-*.ps1`) - Deploy via GPO instead to avoid creating rogue VMs during CIT build
 
 ---
 
 ## Summary
 
-**Total Scripts in windows-scripts/**: 32  
-**In CIT Guide**: 13  
-**Should Add**: 2 (install-powershell7.ps1, enable-screen-capture-protection.ps1)  
-**Client-Specific**: 8  
-**Not for CIT**: 9
+**Total Scripts in windows-scripts/**: 31  
+**In CIT Guide**: 8  
+**Client-Specific**: 7  
+**Not for CIT**: 16
+
+**Note:** The following scripts were removed from CIT and are now handled via GPO:
+- `configure-outlook-cached-mode.ps1` (GPO)
+- `enable-mdm-enrollment.ps1` (GPO)
+- `configure-windows-installer-rds-compatibility.ps1` (GPO)
+- `disable-power-options.ps1` (GPO)
+- `configure-fslogix-tray-startup.ps1` (decommissioned)
 
 ---
 
 ## Next Steps
 
 1. ✅ Add `install-fslogix-status-to-pd-scripts.ps1` to CIT guide (DONE)
-2. ⭐ Add `install-powershell7.ps1` to CIT guide (REQUIRED)
-3. ⭐ Add `enable-screen-capture-protection.ps1` to CIT guide (RECOMMENDED)
+2. ✅ Add `install-powershell7.ps1` to CIT guide (DONE)
+3. ⭐ Add `enable-screen-capture-protection.ps1` to CIT guide (OPTIONAL - removed per user request)
 4. 📋 Document client-specific scripts for reference
 5. 🗑️ Consider removing/archiving scripts not used
 

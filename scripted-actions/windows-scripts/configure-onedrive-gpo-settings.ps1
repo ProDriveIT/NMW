@@ -75,13 +75,18 @@ function Set-RegistryValue {
 Write-Host "Configuring OneDrive and SharePoint settings..." -ForegroundColor Cyan
 Write-Host "=" * 60
 
-# 1. Auto-mount Team Sites (enabled)
+# 1. Auto-mount Team Sites (DISABLED BY DEFAULT - can cause FSLogix login hangs)
 # Registry: HKLM:\SOFTWARE\Policies\Microsoft\OneDrive\AutoMountTeamSites
 # Value: 1 = Enabled
+# WARNING: Enabling this can cause FSLogix profile load to hang if user has many SharePoint sites
+#          or if there are network/connectivity issues during login.
+#          Users can manually sync SharePoint sites after login instead.
 # This will auto-mount all SharePoint/Teams sites the user has access to (permissions are enforced)
-Write-Host "`n1. Configuring Auto-mount Team Sites..." -ForegroundColor Yellow
-Set-RegistryValue -Path $oneDrivePolicyPath -Name "AutoMountTeamSites" -Value 1 -Type "DWord"
-Write-Host "   All SharePoint sites the user has access to will be auto-mounted" -ForegroundColor Gray
+# Write-Host "`n1. Configuring Auto-mount Team Sites..." -ForegroundColor Yellow
+# Set-RegistryValue -Path $oneDrivePolicyPath -Name "AutoMountTeamSites" -Value 1 -Type "DWord"
+# Write-Host "   All SharePoint sites the user has access to will be auto-mounted" -ForegroundColor Gray
+Write-Host "`n1. Auto-mount Team Sites: DISABLED (to prevent FSLogix login hangs)" -ForegroundColor Yellow
+Write-Host "   Users can manually sync SharePoint sites after login" -ForegroundColor Gray
 
 # 2. Dehydrate synced Team Sites (enabled)
 # Registry: HKLM:\SOFTWARE\Policies\Microsoft\OneDrive\DehydrateSyncedTeamSites
@@ -116,12 +121,14 @@ Set-RegistryValue -Path $oneDrivePolicyPath -Name "FilesOnDemandEnabled" -Value 
 Write-Host "`n" + ("=" * 60)
 Write-Host "OneDrive and SharePoint settings configured successfully!" -ForegroundColor Green
 Write-Host "`nSettings Summary:" -ForegroundColor Cyan
-Write-Host "  - Auto-mount Team Sites: Enabled (all accessible sites)"
+Write-Host "  - Auto-mount Team Sites: DISABLED (prevents FSLogix login hangs)"
 Write-Host "  - Dehydrate synced Team Sites: Enabled"
 Write-Host "  - KFM opt-in without wizard: Enabled (Tenant: $tenantId)"
 Write-Host "  - Silent account configuration: Enabled"
 Write-Host "  - Files On Demand: Enabled"
 Write-Host "`nNote: These settings will take effect after OneDrive restart or user logon." -ForegroundColor Gray
+Write-Host "`nWARNING: AutoMountTeamSites is disabled to prevent FSLogix profile load hangs." -ForegroundColor Yellow
+Write-Host "         If you need auto-mount, enable it but be aware it may cause login delays." -ForegroundColor Yellow
 
 ### End Script ###
 

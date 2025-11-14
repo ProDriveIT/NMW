@@ -254,88 +254,42 @@ Click **+ Add your own script** and add the following scripts in order:
    - **Name**: `Install OneDrive Per Machine`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-onedrive-per-machine.ps1`
    - Click **Save**
-   - **Note**: OneDrive auto-signin and SharePoint sync are handled by Intune configuration profile (see script #4). No additional OneDrive configuration script needed.
+   - **Note**: OneDrive auto-signin and SharePoint sync are handled by Intune configuration profile via GPO. No additional OneDrive configuration script needed.
 
-3. **Configure Outlook Cached Exchange Mode** (Recommended for AVD performance)
-   - **Name**: `Configure Outlook Cached Exchange Mode`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/configure-outlook-cached-mode.ps1`
-   - Click **Save**
-   - **Note**: Configures Outlook with Cached Exchange Mode optimized for AVD (3 months cache, optimized sync settings). Must be added AFTER Microsoft 365 Apps installation.
-
-4. **Enable MDM Enrollment for Intune** (Required if using Intune configuration profiles)
-   - **Name**: `Enable MDM Enrollment for Intune`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/enable-mdm-enrollment.ps1`
-   - Click **Save**
-   - **Note**: Enables automatic MDM enrollment so devices can receive Intune configuration profiles (e.g., OneDrive auto-signin, SharePoint library sync). Required for Intune-managed AVD environments. Must be run AFTER domain join. For domain-joined devices, ensure hybrid Azure AD join is configured.
-
-5. **Enable Screen Capture Protection** (Recommended for AVD security)
-   - **Name**: `Enable Screen Capture Protection`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/enable-screen-capture-protection.ps1`
-   - Click **Save**
-   - **Note**: Enables screen capture protection to prevent users from taking screenshots or recording the screen in AVD sessions. This is a security best practice for AVD environments. Must be added AFTER MDM enrollment (script #4).
-
-6. **Install PowerShell 7** (Required for FSLogix Status script)
+3. **Install PowerShell 7** (Required for FSLogix Status script)
    - **Name**: `Install PowerShell 7`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-powershell7.ps1`
    - Click **Save**
-   - **Note**: Installs PowerShell 7.2+ which is required for the FSLogix Status script. Must be added BEFORE script #8 (FSLogix Status script).
+   - **Note**: Installs PowerShell 7.2+ which is required for the FSLogix Status script. Must be added BEFORE script #4 (FSLogix Status script).
 
-7. **Configure FSLogix Tray Startup** (Recommended for FSLogix visibility)
-   - **Name**: `Configure FSLogix Tray Startup`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/configure-fslogix-tray-startup.ps1`
-   - Click **Save**
-   - **Note**: Configures FSLogix tray application (frxtray.exe) to run at user logon. Provides system tray icon showing FSLogix profile status. Must be added AFTER FSLogix is installed (via built-in script #5).
-
-8. **Install FSLogix Status Script to C:\PD-Scripts** (Replaces traffic lights)
+4. **Install FSLogix Status Script to C:\PD-Scripts** (Replaces traffic lights)
    - **Name**: `Install FSLogix Status Script`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-fslogix-status-to-pd-scripts.ps1`
    - Click **Save**
-   - **Note**: Downloads the FSLogix Profile Status script from GitHub and places it in `C:\PD-Scripts\FSLogix-Status.ps1`. This script provides a comprehensive dashboard showing FSLogix profile status, replacing the traditional traffic lights indicator. Users can run it with: `pwsh -File "C:\PD-Scripts\FSLogix-Status.ps1"`. Must be added AFTER FSLogix is installed (via built-in script #5) and AFTER PowerShell 7 is installed (script #6).
+   - **Note**: Downloads the FSLogix Profile Status script from GitHub and places it in `C:\PD-Scripts\FSLogix-Status.ps1`. This script provides a comprehensive dashboard showing FSLogix profile status, replacing the traditional traffic lights indicator. Users can run it with: `pwsh -File "C:\PD-Scripts\FSLogix-Status.ps1"`. Must be added AFTER FSLogix is installed (via built-in script #5) and AFTER PowerShell 7 is installed (script #3).
 
-9. **Configure Windows Installer RDS Compatibility** (Recommended for application compatibility)
-   - **Name**: `Configure Windows Installer RDS Compatibility`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/configure-windows-installer-rds-compatibility.ps1`
-   - Click **Save**
-   - **Note**: Enables "Turn off Windows Installer RDS Compatibility" policy. Prevents Windows Installer from applying RDS compatibility fixes, useful for applications already designed for multi-user environments.
-
-10. **Disable Power Options for Users** (Recommended for AVD security)
-   - **Name**: `Disable Power Options for Users`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/disable-power-options.ps1`
-   - Click **Save**
-   - **Note**: Removes and prevents access to Shut Down, Restart, Sleep, and Hibernate commands from Start Menu. Essential for AVD to prevent users from accidentally shutting down session hosts. Users can still sign out/log off.
-
-11. **Optimize Microsoft Edge**
+5. **Optimize Microsoft Edge**
    - **Name**: `Optimize Microsoft Edge`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/optimize-microsoft-edge.ps1`
    - Click **Save**
 
-12. **Install Windows Package Manager (winget)**
+6. **Install Windows Package Manager (winget)**
    - **Name**: `Install Windows Package Manager (winget)`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-winget.ps1`
    - Click **Save**
    - **Note**: This should be added before Chrome and Adobe Reader scripts, as they use winget for installation.
 
-13. **Install Google Chrome Per Machine**
+7. **Install Google Chrome Per Machine**
    - **Name**: `Install Google Chrome Per Machine`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-chrome-per-machine.ps1`
    - Click **Save**
-   - **Note**: Requires winget to be installed first (add script #12 above).
+   - **Note**: Requires winget to be installed first (add script #6 above).
 
-14. **Install Adobe Reader Per Machine**
+8. **Install Adobe Reader Per Machine**
    - **Name**: `Install Adobe Reader Per Machine`
    - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-adobe-reader-per-machine.ps1`
    - Click **Save**
-   - **Note**: Requires winget to be installed first (add script #12 above).
-
-15. **Install Datto RMM Agent** (Client-specific - customize as needed)
-   - **Name**: `Install Datto RMM Agent`
-   - **URI**: `https://raw.githubusercontent.com/ProDriveIT/NMW/refs/heads/main/scripted-actions/windows-scripts/install-datto-rmm-stewart-co.ps1`
-   - Click **Save**
-   - **Note**: ⚠️ **IMPORTANT**: This script is configured for Stewart & Co client. For other clients, you must:
-     - Create a client-specific version of this script with the correct Datto RMM download URL
-     - Update the script URL in the CIT template to point to the client-specific script
-     - The download URL is client-specific and must be obtained from the Datto RMM portal for each client
-     - Only add this script if the client requires Datto RMM agent installation
+   - **Note**: Requires winget to be installed first (add script #6 above).
 
 **Note**: Scripts will execute in the order listed. Use **Move up** or **Move down** to reorder if needed.
 
@@ -842,22 +796,21 @@ Scripts are available in this repository:
 
 **Available Scripts:**
 - `install-m365-apps.ps1` - Installs/updates Microsoft 365 Apps for Business (system-wide)
-- `install-onedrive-per-machine.ps1` - Installs OneDrive for all users (system-wide). Note: OneDrive auto-signin and SharePoint sync are handled by Intune configuration profile when using enable-mdm-enrollment.ps1
+- `install-onedrive-per-machine.ps1` - Installs OneDrive for all users (system-wide). Note: OneDrive auto-signin and SharePoint sync are handled by GPO/Intune configuration profile
 - `configure-onedrive-auto-signin.ps1` - Configures OneDrive for automatic sign-in using Azure AD SSO (alternative to Intune profile, not needed if using Intune)
-- `configure-outlook-cached-mode.ps1` - Configures Outlook Cached Exchange Mode optimized for AVD (must run after M365 Apps installation)
-- `enable-mdm-enrollment.ps1` - Enables automatic MDM enrollment for Intune (required if using Intune configuration profiles for OneDrive/SharePoint)
-- `enable-screen-capture-protection.ps1` - Enables screen capture protection to prevent screenshots/recording in AVD sessions (security best practice)
 - `install-powershell7.ps1` - Installs PowerShell 7.2+ (required for FSLogix Status script)
-- `configure-fslogix-tray-startup.ps1` - Configures FSLogix tray application to run at user logon (provides system tray icon for FSLogix status)
 - `install-fslogix-status-to-pd-scripts.ps1` - Downloads FSLogix Profile Status script to C:\PD-Scripts (replaces traffic lights indicator)
-- `configure-windows-installer-rds-compatibility.ps1` - Enables "Turn off Windows Installer RDS Compatibility" policy (prevents RDS compatibility fixes for applications)
-- `disable-power-options.ps1` - Removes and prevents access to Shut Down, Restart, Sleep, and Hibernate commands (essential for AVD security)
 - `optimize-microsoft-edge.ps1` - Configures Edge policies for optimized AVD performance
 - `install-winget.ps1` - Installs Windows Package Manager (winget) if not already available
 - `install-chrome-per-machine.ps1` - Installs Google Chrome for all users using winget (system-wide, sysprep-compatible)
 - `install-adobe-reader-per-machine.ps1` - Installs Adobe Acrobat Reader DC for all users using winget (system-wide, sysprep-compatible)
-- `install-datto-rmm-stewart-co.ps1` - Installs Datto RMM agent for Stewart & Co client. ⚠️ **Client-specific**: Create a customized version for each client with their specific Datto RMM download URL
-- And more scripts in `scripted-actions/custom-image-template-scripts/` directory
+
+**Note:** The following settings are now configured via GPO instead of scripts:
+- Outlook Cached Exchange Mode
+- MDM Enrollment for Intune
+- Windows Installer RDS Compatibility
+- Power Options restrictions
+- Datto RMM Agent (deployed via GPO to avoid creating rogue VMs during CIT build)
 
 ## Next Steps
 
