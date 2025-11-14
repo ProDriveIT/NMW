@@ -1,0 +1,24 @@
+Windows Registry Editor Version 5.00
+
+; OneDrive and SharePoint Policy Settings
+; Converted from Intune Configuration Policy: CA - CONFIG - AVD - OneDrive & Sharepoint
+; Tenant ID: 2106f27c-fb2e-4787-b960-3dc6aac54826 (Cheesman)
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\OneDrive]
+; 1. Auto-mount Team Sites (enabled)
+"AutoMountTeamSites"=dword:00000001
+
+; 2. Dehydrate synced Team Sites (enabled)
+"DehydrateSyncedTeamSites"=dword:00000001
+
+; 4. Silent account configuration (enabled)
+"SilentAccountConfig"=dword:00000001
+
+; 5. Files On Demand enabled (enabled)
+"FilesOnDemandEnabled"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\OneDrive\KFMSilentOptIn]
+; 3. KFM opt-in without wizard (enabled) with tenant ID
+"TenantId"="2106f27c-fb2e-4787-b960-3dc6aac54826"
+"KFMOptInWithWizard"=dword:00000000
+
